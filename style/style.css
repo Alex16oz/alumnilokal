@@ -17,13 +17,33 @@ nav h1 {
   font-size: 1.5em;
 }
 
+.menu-container {
+  padding: 10px 20px;
+  text-align: left;
+}
+
+.menu-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-right: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.menu-button:hover {
+  background-color: #0056b3;
+}
+
 #alumni-container {
   padding: 20px;
-  margin: 20px;
+  margin: 0 20px 20px 20px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  overflow-x: auto; /* Tambahkan baris ini */
+  overflow-x: auto;
 }
 
 table {
