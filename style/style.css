@@ -277,3 +277,43 @@ tbody tr:hover td {
   color: #555;
   vertical-align: middle;
 }
+/* Custom Dropdown/Select Styling */
+.popup-body select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 1em;
+  color: #333;
+  appearance: none; /* Menghilangkan tampilan default browser */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-13%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013l128%20127.9c3.6%203.6%207.8%205.4%2013%205.4s9.4-1.8%2013-5.4L287%2095.2c3.6-3.6%205.4-7.8%205.4-13%200-5-1.8-9.4-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 12px auto;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.popup-body select:hover {
+  border-color: #0056b3;
+}
+
+.popup-body select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Penyesuaian tata letak di popup agar lebih rapi */
+.popup-body label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+#sort-popup-container .popup-body div {
+    margin-top: 15px;
+}
