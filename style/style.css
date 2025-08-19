@@ -43,42 +43,48 @@ nav h1 {
 }
 
 #alumni-container {
-  padding: 20px;
   margin: 0 20px 20px 20px;
-  background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  overflow-x: auto;
+  overflow: auto; /* Memungkinkan scroll horizontal dan vertikal */
+  max-height: 75vh; /* Batasi tinggi container agar bisa di-scroll */
+  border: 1px solid #ddd; /* Tambahkan border untuk kerapian */
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+  border-collapse: collapse; /* Ganti ke collapse untuk border yang lebih rapi */
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 12px;
+  padding: 12px 15px;
   text-align: left;
+  min-width: 160px; /* Sedikit lebih lebar untuk kenyamanan membaca */
+  background-color: white; /* Beri background putih pada sel data */
 }
 
+/* Kunci perbaikan ada di sini */
 thead {
-  background-color: #007bff;
-  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 th {
+  background-color: #007bff; /* Pastikan background header solid */
+  color: white;
   font-weight: bold;
 }
 
 tbody tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: #f8f9fa; /* Warna zebra yang lebih lembut */
 }
 
-tbody tr:hover {
-  background-color: #ddd;
+tbody tr:hover td {
+  background-color: #e9ecef; /* Efek hover pada seluruh baris */
 }
+
 
 /* Gaya untuk Popup yang Lebih Baik */
 .popup-overlay {
