@@ -18,7 +18,7 @@ async function fetchAlumniData() {
   if (data.length > 0) {
     allHeaders = Object.keys(data[0]);
   }
-  
+
   // Muat preferensi kolom atau gunakan semua kolom jika tidak ada
   const savedHeaders = getSavedHeaders() || allHeaders;
   renderTable(savedHeaders);
@@ -38,10 +38,17 @@ function renderTable(headersToShow) {
   const thead = document.createElement('thead');
   const tbody = document.createElement('tbody');
   const headerRow = document.createElement('tr');
-  
+
   headersToShow.forEach(headerText => {
     const th = document.createElement('th');
     th.textContent = headerText.replace(/_/g, ' ').toUpperCase();
+
+    // Tambahkan elemen untuk mengubah ukuran
+    const resizer = document.createElement('div');
+    resizer.className = 'resizer';
+    th.appendChild(resizer);
+    makeResizable(th, resizer);
+
     headerRow.appendChild(th);
   });
   thead.appendChild(headerRow);
@@ -59,7 +66,51 @@ function renderTable(headersToShow) {
   table.appendChild(thead);
   table.appendChild(tbody);
   alumniContainer.appendChild(table);
+
+  autoSizeColumns(table); // Panggil fungsi untuk menyesuaikan lebar kolom
 }
+
+function makeResizable(th, resizer) {
+  let startX, startWidth;
+
+  resizer.addEventListener('mousedown', (e) => {
+    startX = e.clientX;
+    startWidth = th.offsetWidth;
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+  function onMouseMove(e) {
+    const newWidth = startWidth + (e.clientX - startX);
+    if (newWidth > 50) { // Lebar minimum kolom
+        th.style.width = `${newWidth}px`;
+    }
+  }
+
+  function onMouseUp() {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+}
+
+function autoSizeColumns(table) {
+  const headers = Array.from(table.querySelectorAll('thead th'));
+  const rows = Array.from(table.querySelectorAll('tbody tr'));
+
+  headers.forEach((header, index) => {
+    let maxWidth = header.offsetWidth;
+    rows.forEach(row => {
+      const cell = row.cells[index];
+      // Perkiraan lebar konten. Untuk akurasi lebih, bisa gunakan canvas.
+      const cellWidth = cell.scrollWidth;
+      if (cellWidth > maxWidth) {
+        maxWidth = cellWidth;
+      }
+    });
+    header.style.width = `${maxWidth + 20}px`; // Tambahkan sedikit padding
+  });
+}
+
 
 function populatePopup(selectedHeaders) {
   const columnSelectionContainer = document.getElementById('column-selection');

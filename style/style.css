@@ -54,6 +54,7 @@ nav h1 {
 table {
   width: 100%;
   border-collapse: collapse; /* Ganti ke collapse untuk border yang lebih rapi */
+  table-layout: fixed; /* Penting untuk pengubahan ukuran kolom */
 }
 
 th, td {
@@ -62,6 +63,9 @@ th, td {
   text-align: left;
   min-width: 160px; /* Sedikit lebih lebar untuk kenyamanan membaca */
   background-color: white; /* Beri background putih pada sel data */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Kunci perbaikan ada di sini */
@@ -75,6 +79,16 @@ th {
   background-color: #007bff; /* Pastikan background header solid */
   color: white;
   font-weight: bold;
+  position: relative; /* Diperlukan untuk position: absolute pada resizer */
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  cursor: col-resize;
+  height: 100%;
 }
 
 tbody tr:nth-child(even) {
@@ -84,7 +98,6 @@ tbody tr:nth-child(even) {
 tbody tr:hover td {
   background-color: #e9ecef; /* Efek hover pada seluruh baris */
 }
-
 
 /* Gaya untuk Popup yang Lebih Baik */
 .popup-overlay {
