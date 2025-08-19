@@ -135,11 +135,18 @@ function populatePopup(selectedHeaders) {
   columnSelectionContainer.innerHTML = '';
   allHeaders.forEach(header => {
     const label = document.createElement('label');
+    label.className = 'container'; // Tambahkan kelas container
+
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.value = header;
     checkbox.checked = selectedHeaders.includes(header);
+    
+    const checkmark = document.createElement('div');
+    checkmark.className = 'checkmark';
+
     label.appendChild(checkbox);
+    label.appendChild(checkmark);
     label.appendChild(document.createTextNode(` ${header.replace(/_/g, ' ').toUpperCase()}`));
     columnSelectionContainer.appendChild(label);
   });

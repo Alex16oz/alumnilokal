@@ -153,19 +153,64 @@ tbody tr:hover td {
 
 #column-selection {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 10px;
 }
 
-#column-selection label {
+/* Gaya Checkbox Baru (Ukuran Diperkecil) */
+#column-selection .container {
+  --input-focus: #2d8cf0;
+  --input-out-of-focus: #ccc;
+  --bg-color: #fff;
+  --bg-color-alt: #666;
+  --main-color: #323232;
+  position: relative;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  cursor: pointer;
 }
 
-#column-selection input {
-  margin-right: 8px;
+#column-selection .container input {
+  position: absolute;
+  opacity: 0;
 }
+
+#column-selection .checkmark {
+  width: 20px;  /* Ukuran diperkecil */
+  height: 20px; /* Ukuran diperkecil */
+  position: relative;
+  top: 0;
+  left: 0;
+  border: 2px solid var(--main-color);
+  border-radius: 5px;
+  box-shadow: 1px 1px 1px var(--main-color);
+  background-color: var(--input-out-of-focus);
+  transition: all 0.3s;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+#column-selection .container input:checked ~ .checkmark {
+  background-color: var(--input-focus);
+}
+
+#column-selection .checkmark:after {
+  content: "";
+  width: 5px;   /* Ukuran diperkecil */
+  height: 10px; /* Ukuran diperkecil */
+  position: absolute;
+  top: 2px;     /* Posisi disesuaikan */
+  left: 6px;    /* Posisi disesuaikan */
+  display: none;
+  border: solid var(--bg-color);
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+}
+
+#column-selection .container input:checked ~ .checkmark:after {
+  display: block;
+}
+
 
 .popup-footer {
   padding: 15px 20px;
@@ -202,18 +247,18 @@ tbody tr:hover td {
 /* Gaya untuk Kontrol Paginasi (Versi Ringkas) */
 #pagination-controls {
   text-align: center;
-  margin: 10px 0; /* Margin atas/bawah dikurangi */
+  margin: 10px 0;
 }
 
 #pagination-controls button {
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 5px 10px; /* Padding diperkecil */
-  margin: 0 2px;     /* Margin antar tombol dikurangi */
+  padding: 5px 10px;
+  margin: 0 2px;
   border-radius: 3px;
   cursor: pointer;
-  font-size: 0.9em;  /* Ukuran font diperkecil */
+  font-size: 0.9em;
   transition: background-color 0.2s;
 }
 
@@ -227,8 +272,8 @@ tbody tr:hover td {
 }
 
 #page-info {
-  margin: 0 8px;    /* Margin kiri/kanan dikurangi */
-  font-size: 0.9em;  /* Ukuran font diperkecil */
+  margin: 0 8px;
+  font-size: 0.9em;
   color: #555;
   vertical-align: middle;
 }
