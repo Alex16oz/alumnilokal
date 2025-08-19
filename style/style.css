@@ -61,7 +61,7 @@ th, td {
   border: 1px solid #ddd;
   padding: 12px 15px;
   text-align: left;
-  background-color: white;
+  /* background-color: white; <-- Dihapus dari sini */
   word-wrap: break-word; /* Memungkinkan teks wrap ke baris baru */
 }
 
@@ -93,9 +93,15 @@ th .sort-icon {
   height: 100%;
 }
 
-tbody tr:nth-child(even) {
-  background-color: #f8f9fa;
+/* Aturan Baru untuk Latar Belakang Baris Ganjil dan Genap */
+tbody tr:nth-child(odd) td {
+  background-color: #ffffff; /* Putih untuk baris ganjil */
 }
+
+tbody tr:nth-child(even) td {
+  background-color: #f2f2f2; /* Abu-abu muda untuk baris genap */
+}
+
 
 tbody tr:hover td {
   background-color: #e9ecef;
