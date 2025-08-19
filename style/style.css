@@ -187,3 +187,42 @@ tbody tr:hover td {
 .popup-footer button.primary:hover {
   background-color: #218838;
 }
+
+#pagination-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Gaya untuk Kontrol Paginasi (Versi Ringkas) */
+#pagination-controls {
+  text-align: center;
+  margin: 12px 0; /* Margin atas/bawah dikurangi */
+}
+
+#pagination-controls button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px; /* Padding diperkecil */
+  margin: 0 2px;     /* Margin antar tombol dikurangi */
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9em;  /* Ukuran font diperkecil */
+  transition: background-color 0.2s;
+}
+
+#pagination-controls button:hover {
+  background-color: #0056b3;
+}
+
+#pagination-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+#page-info {
+  margin: 0 8px;    /* Margin kiri/kanan dikurangi */
+  font-size: 0.9em;  /* Ukuran font diperkecil */
+  color: #555;
+  vertical-align: middle;
+}
