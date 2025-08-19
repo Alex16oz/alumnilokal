@@ -25,7 +25,7 @@ async function fetchAlumniData() {
     allHeaders = Object.keys(data[0]);
   }
 
-  currentTableHeaders = getSavedHeaders() || allHeaders;
+  currentTableHeaders = allHeaders; // Secara default pilih semua kolom
   renderTableStructure();
   displayPage(currentPage);
   setupPagination();
@@ -145,15 +145,6 @@ function populatePopup(selectedHeaders) {
   });
 }
 
-function saveHeaders(headers) {
-  localStorage.setItem('alumniTableHeaders', JSON.stringify(headers));
-}
-
-function getSavedHeaders() {
-  const saved = localStorage.getItem('alumniTableHeaders');
-  return saved ? JSON.parse(saved) : null;
-}
-
 document.getElementById('toggle-columns-btn').addEventListener('click', () => {
   document.getElementById('popup-container').style.display = 'flex';
   document.body.classList.add('no-scroll');
@@ -173,18 +164,6 @@ document.getElementById('close-popup-btn').addEventListener('click', closePopup)
 
 document.getElementById('apply-columns-btn').addEventListener('click', () => {
   currentTableHeaders = Array.from(document.querySelectorAll('#column-selection input:checked')).map(cb => cb.value);
-  renderTableStructure();
-  displayPage(1);
-  setupPagination();
-  populateSortPopup(); // Update sort popup with new columns
-  closePopup();
-});
-
-document.getElementById('save-prefs-btn').addEventListener('click', () => {
-  const selectedHeaders = Array.from(document.querySelectorAll('#column-selection input:checked')).map(cb => cb.value);
-  saveHeaders(selectedHeaders);
-  alert('Pilihan kolom telah disimpan!');
-  currentTableHeaders = selectedHeaders;
   renderTableStructure();
   displayPage(1);
   setupPagination();
