@@ -168,6 +168,7 @@ tbody tr:hover td {
   cursor: pointer;
   display: flex;
   align-items: center;
+  font-size: 0.9em;
 }
 
 #column-selection .container input {
@@ -176,13 +177,13 @@ tbody tr:hover td {
 }
 
 #column-selection .checkmark {
-  width: 20px;  /* Ukuran diperkecil */
-  height: 20px; /* Ukuran diperkecil */
+  width: 18px;  /* Ukuran diperkecil */
+  height: 18px; /* Ukuran diperkecil */
   position: relative;
   top: 0;
   left: 0;
   border: 2px solid var(--main-color);
-  border-radius: 5px;
+  border-radius: 4px;
   box-shadow: 1px 1px 1px var(--main-color);
   background-color: var(--input-out-of-focus);
   transition: all 0.3s;
@@ -196,11 +197,11 @@ tbody tr:hover td {
 
 #column-selection .checkmark:after {
   content: "";
-  width: 5px;   /* Ukuran diperkecil */
-  height: 10px; /* Ukuran diperkecil */
+  width: 4px;   /* Ukuran diperkecil */
+  height: 8px; /* Ukuran diperkecil */
   position: absolute;
-  top: 2px;     /* Posisi disesuaikan */
-  left: 6px;    /* Posisi disesuaikan */
+  top: 1px;     /* Posisi disesuaikan */
+  left: 5px;    /* Posisi disesuaikan */
   display: none;
   border: solid var(--bg-color);
   border-width: 0 2.5px 2.5px 0;
