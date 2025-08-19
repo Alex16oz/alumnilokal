@@ -14,7 +14,7 @@
 
   <div class="menu-container">
     <button id="toggle-columns-btn" class="menu-button">Pilih Kolom</button>
-    <button class="menu-button">Menu 2</button>
+    <button id="toggle-pagination-btn" class="menu-button">Atur Paginasi</button>
     <button class="menu-button">Menu 3</button>
   </div>
 
@@ -43,6 +43,31 @@
         <button id="deselect-all-btn">Hapus Semua</button>
         <button id="save-prefs-btn" class="primary">Simpan Pilihan</button>
         <button id="apply-columns-btn">Terapkan & Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pagination-popup-container" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+      <div class="popup-header">
+        <h2>Atur Paginasi</h2>
+        <button id="close-pagination-popup-btn" class="close-button">&times;</button>
+      </div>
+      <div class="popup-body">
+        <label for="rows-per-page-select">Baris per halaman:</label>
+        <select id="rows-per-page-select">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20" selected>20</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="all">Semua</option>
+        </select>
+      </div>
+      <div class="popup-footer">
+        <button id="apply-pagination-btn" class="primary">Terapkan</button>
       </div>
     </div>
   </div>

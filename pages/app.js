@@ -11,7 +11,7 @@ let currentTableHeaders = [];
 
 // Variabel Paginasi
 let currentPage = 1;
-const rowsPerPage = 15; // Anda bisa mengubah jumlah baris per halaman di sini
+let rowsPerPage = 20; // Nilai default
 
 async function fetchAlumniData() {
   const { data, error } = await _supabase.from('alumni').select('*');
@@ -163,6 +163,11 @@ function closePopup() {
   document.body.classList.remove('no-scroll');
 }
 
+function closePaginationPopup() {
+    document.getElementById('pagination-popup-container').style.display = 'none';
+    document.body.classList.remove('no-scroll');
+}
+
 document.getElementById('close-popup-btn').addEventListener('click', closePopup);
 
 document.getElementById('apply-columns-btn').addEventListener('click', () => {
@@ -190,6 +195,31 @@ document.getElementById('select-all-btn').addEventListener('click', () => {
 
 document.getElementById('deselect-all-btn').addEventListener('click', () => {
   document.querySelectorAll('#column-selection input').forEach(cb => cb.checked = false);
+});
+
+document.getElementById('toggle-pagination-btn').addEventListener('click', () => {
+  document.getElementById('pagination-popup-container').style.display = 'flex';
+  document.body.classList.add('no-scroll');
+});
+
+document.getElementById('close-pagination-popup-btn').addEventListener('click', closePaginationPopup);
+
+document.getElementById('apply-pagination-btn').addEventListener('click', () => {
+  const select = document.getElementById('rows-per-page-select');
+  const selectedValue = select.value;
+  const paginationControls = document.getElementById('pagination-controls');
+
+  if (selectedValue === 'all') {
+    rowsPerPage = allAlumniData.length;
+    paginationControls.style.display = 'none';
+  } else {
+    rowsPerPage = parseInt(selectedValue, 10);
+    paginationControls.style.display = 'block';
+  }
+  
+  displayPage(1);
+  setupPagination();
+  closePaginationPopup();
 });
 
 fetchAlumniData();
