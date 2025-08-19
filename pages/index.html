@@ -13,13 +13,31 @@
   </nav>
 
   <div class="menu-container">
-    <button class="menu-button">Menu 1</button>
+    <button id="toggle-columns-btn" class="menu-button">Pilih Kolom</button>
     <button class="menu-button">Menu 2</button>
     <button class="menu-button">Menu 3</button>
   </div>
 
   <div id="alumni-container">
+  </div>
+
+  <div id="popup-container" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+      <div class="popup-header">
+        <h2>Pilih Kolom</h2>
+        <button id="close-popup-btn" class="close-button">&times;</button>
+      </div>
+      <div class="popup-body">
+        <div id="column-selection"></div>
+      </div>
+      <div class="popup-footer">
+        <button id="select-all-btn">Pilih Semua</button>
+        <button id="deselect-all-btn">Hapus Semua</button>
+        <button id="save-prefs-btn" class="primary">Simpan Pilihan</button>
+        <button id="apply-columns-btn">Terapkan & Tutup</button>
+      </div>
     </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
