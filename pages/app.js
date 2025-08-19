@@ -8,6 +8,7 @@ const _supabase = createClient(supabaseUrl, supabaseKey)
 let allAlumniData = [];
 let allHeaders = [];
 let currentTableHeaders = [];
+let currentSort = { column: null, direction: 'asc' };
 
 // Variabel Paginasi
 let currentPage = 1;
@@ -29,6 +30,7 @@ async function fetchAlumniData() {
   displayPage(currentPage);
   setupPagination();
   populatePopup(currentTableHeaders);
+  populateSortPopup();
 }
 
 function renderTableStructure() {
@@ -106,7 +108,6 @@ function updatePaginationInfo() {
   document.getElementById('last-page-btn').disabled = currentPage === totalPages;
 }
 
-
 function makeResizable(th, resizer) {
   let startX, startWidth;
   resizer.addEventListener('mousedown', (e) => {
@@ -175,6 +176,7 @@ document.getElementById('apply-columns-btn').addEventListener('click', () => {
   renderTableStructure();
   displayPage(1);
   setupPagination();
+  populateSortPopup(); // Update sort popup with new columns
   closePopup();
 });
 
@@ -186,6 +188,7 @@ document.getElementById('save-prefs-btn').addEventListener('click', () => {
   renderTableStructure();
   displayPage(1);
   setupPagination();
+  populateSortPopup(); // Update sort popup with new columns
   closePopup();
 });
 
@@ -220,6 +223,59 @@ document.getElementById('apply-pagination-btn').addEventListener('click', () => 
   displayPage(1);
   setupPagination();
   closePaginationPopup();
+});
+
+// --- Sort Functionality ---
+
+function populateSortPopup() {
+  const sortColumnSelect = document.getElementById('sort-column-select');
+  sortColumnSelect.innerHTML = '';
+  currentTableHeaders.forEach(header => {
+    const option = document.createElement('option');
+    option.value = header;
+    option.textContent = header.replace(/_/g, ' ').toUpperCase();
+    sortColumnSelect.appendChild(option);
+  });
+}
+
+function sortAlumniData() {
+  const { column, direction } = currentSort;
+  if (!column) return;
+
+  allAlumniData.sort((a, b) => {
+    const valA = a[column];
+    const valB = b[column];
+
+    if (valA < valB) {
+      return direction === 'asc' ? -1 : 1;
+    }
+    if (valA > valB) {
+      return direction === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+}
+
+function closeSortPopup() {
+  document.getElementById('sort-popup-container').style.display = 'none';
+  document.body.classList.remove('no-scroll');
+}
+
+document.getElementById('toggle-sort-btn').addEventListener('click', () => {
+  document.getElementById('sort-popup-container').style.display = 'flex';
+  document.body.classList.add('no-scroll');
+});
+
+document.getElementById('close-sort-popup-btn').addEventListener('click', closeSortPopup);
+
+document.getElementById('apply-sort-btn').addEventListener('click', () => {
+  const column = document.getElementById('sort-column-select').value;
+  const direction = document.querySelector('input[name="sort-direction"]:checked').value;
+  
+  currentSort = { column, direction };
+  sortAlumniData();
+  displayPage(1);
+  closeSortPopup();
 });
 
 fetchAlumniData();

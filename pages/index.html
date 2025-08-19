@@ -15,7 +15,7 @@
   <div class="menu-container">
     <button id="toggle-columns-btn" class="menu-button">Pilih Kolom</button>
     <button id="toggle-pagination-btn" class="menu-button">Atur Paginasi</button>
-    <button class="menu-button">Menu 3</button>
+    <button id="toggle-sort-btn" class="menu-button">Urutkan Tabel</button>
   </div>
 
   <div id="alumni-container">
@@ -68,6 +68,26 @@
       </div>
       <div class="popup-footer">
         <button id="apply-pagination-btn" class="primary">Terapkan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="sort-popup-container" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+      <div class="popup-header">
+        <h2>Urutkan Tabel</h2>
+        <button id="close-sort-popup-btn" class="close-button">&times;</button>
+      </div>
+      <div class="popup-body">
+        <label for="sort-column-select">Urutkan berdasarkan:</label>
+        <select id="sort-column-select"></select>
+        <div>
+          <label><input type="radio" name="sort-direction" value="asc" checked> Ascending</label>
+          <label><input type="radio" name="sort-direction" value="desc"> Descending</label>
+        </div>
+      </div>
+      <div class="popup-footer">
+        <button id="apply-sort-btn" class="primary">Terapkan</button>
       </div>
     </div>
   </div>

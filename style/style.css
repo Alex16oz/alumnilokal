@@ -76,6 +76,12 @@ th {
   color: white;
   font-weight: bold;
   position: relative;
+  cursor: pointer;
+}
+
+th .sort-icon {
+    margin-left: 5px;
+    font-size: 0.8em;
 }
 
 .resizer {
