@@ -53,22 +53,18 @@ nav h1 {
 
 table {
   width: 100%;
-  border-collapse: collapse; /* Ganti ke collapse untuk border yang lebih rapi */
-  table-layout: fixed; /* Penting untuk pengubahan ukuran kolom */
+  border-collapse: collapse;
+  table-layout: auto; /* Izinkan tabel menyesuaikan dengan konten */
 }
 
 th, td {
   border: 1px solid #ddd;
   padding: 12px 15px;
   text-align: left;
-  min-width: 160px; /* Sedikit lebih lebar untuk kenyamanan membaca */
-  background-color: white; /* Beri background putih pada sel data */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  background-color: white;
+  word-wrap: break-word; /* Memungkinkan teks wrap ke baris baru */
 }
 
-/* Kunci perbaikan ada di sini */
 thead {
   position: sticky;
   top: 0;
@@ -76,10 +72,10 @@ thead {
 }
 
 th {
-  background-color: #007bff; /* Pastikan background header solid */
+  background-color: #007bff;
   color: white;
   font-weight: bold;
-  position: relative; /* Diperlukan untuk position: absolute pada resizer */
+  position: relative;
 }
 
 .resizer {
@@ -92,14 +88,13 @@ th {
 }
 
 tbody tr:nth-child(even) {
-  background-color: #f8f9fa; /* Warna zebra yang lebih lembut */
+  background-color: #f8f9fa;
 }
 
 tbody tr:hover td {
-  background-color: #e9ecef; /* Efek hover pada seluruh baris */
+  background-color: #e9ecef;
 }
 
-/* Gaya untuk Popup yang Lebih Baik */
 .popup-overlay {
   position: fixed;
   top: 0;

@@ -67,7 +67,7 @@ function renderTable(headersToShow) {
   table.appendChild(tbody);
   alumniContainer.appendChild(table);
 
-  autoSizeColumns(table); // Panggil fungsi untuk menyesuaikan lebar kolom
+  // autoSizeColumns(table); // Fungsi ini dinonaktifkan untuk mengizinkan CSS menangani lebar kolom
 }
 
 function makeResizable(th, resizer) {
@@ -93,6 +93,7 @@ function makeResizable(th, resizer) {
   }
 }
 
+// Fungsi autoSizeColumns tidak lagi dipanggil, namun tetap ada jika diperlukan di masa depan
 function autoSizeColumns(table) {
   const headers = Array.from(table.querySelectorAll('thead th'));
   const rows = Array.from(table.querySelectorAll('tbody tr'));
@@ -101,16 +102,14 @@ function autoSizeColumns(table) {
     let maxWidth = header.offsetWidth;
     rows.forEach(row => {
       const cell = row.cells[index];
-      // Perkiraan lebar konten. Untuk akurasi lebih, bisa gunakan canvas.
       const cellWidth = cell.scrollWidth;
       if (cellWidth > maxWidth) {
         maxWidth = cellWidth;
       }
     });
-    header.style.width = `${maxWidth + 20}px`; // Tambahkan sedikit padding
+    header.style.width = `${maxWidth + 20}px`;
   });
 }
-
 
 function populatePopup(selectedHeaders) {
   const columnSelectionContainer = document.getElementById('column-selection');
@@ -136,7 +135,6 @@ function getSavedHeaders() {
   return saved ? JSON.parse(saved) : null;
 }
 
-// Event Listeners untuk mengontrol popup dan scroll lock
 document.getElementById('toggle-columns-btn').addEventListener('click', () => {
   document.getElementById('popup-container').style.display = 'flex';
   document.body.classList.add('no-scroll');
@@ -171,5 +169,4 @@ document.getElementById('deselect-all-btn').addEventListener('click', () => {
   document.querySelectorAll('#column-selection input').forEach(cb => cb.checked = false);
 });
 
-// Memuat data saat halaman dimuat
 fetchAlumniData();
