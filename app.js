@@ -518,5 +518,19 @@ document.getElementById('download-json-btn').addEventListener('click', () => {
   closeDownloadPopup();
 });
 
+document.getElementById('download-xlsx-btn').addEventListener('click', () => {
+  const data = getVisibleData();
+  if (data.length === 0) {
+    alert('Tidak ada data untuk diunduh.');
+    return;
+  }
+
+  const worksheet = XLSX.utils.json_to_sheet(data, { header: currentTableHeaders });
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Alumni");
+  XLSX.writeFile(workbook, "alumni_data.xlsx");
+  closeDownloadPopup();
+});
+
 
 fetchAlumniData();
