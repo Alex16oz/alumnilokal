@@ -282,4 +282,166 @@ window.onclick = function(event) {
   }
 }
 
+// --- Add Data Functionality ---
+
+// Show the method choice popup first
+document.getElementById('add-data-btn').addEventListener('click', () => {
+  document.getElementById('add-method-choice-popup').style.display = 'flex';
+  document.body.classList.add('no-scroll');
+});
+
+// Close choice popup
+document.getElementById('close-choice-popup-btn').addEventListener('click', () => {
+  document.getElementById('add-method-choice-popup').style.display = 'none';
+  document.body.classList.remove('no-scroll');
+});
+
+// --- Manual Input Logic ---
+document.getElementById('manual-input-btn').addEventListener('click', () => {
+  document.getElementById('add-method-choice-popup').style.display = 'none'; // Hide choice
+  populateAddDataForm();
+  document.getElementById('add-data-popup-container').style.display = 'flex'; // Show manual form
+  // no-scroll is already active
+});
+
+function closeAddDataPopup() {
+  document.getElementById('add-data-popup-container').style.display = 'none';
+  document.body.classList.remove('no-scroll');
+}
+
+document.getElementById('close-add-data-popup-btn').addEventListener('click', closeAddDataPopup);
+
+function populateAddDataForm() {
+    const form = document.getElementById('add-data-form');
+    form.innerHTML = '';
+    const formHeaders = allHeaders.filter(header => header !== 'id');
+    formHeaders.forEach(header => {
+        const label = document.createElement('label');
+        label.textContent = header.replace(/_/g, ' ').toUpperCase();
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = header;
+        input.style.width = '100%';
+        input.style.padding = '8px';
+        input.style.marginBottom = '10px';
+        input.style.boxSizing = 'border-box';
+        form.appendChild(label);
+        form.appendChild(input);
+    });
+}
+
+document.getElementById('submit-add-data-btn').addEventListener('click', async () => {
+    const form = document.getElementById('add-data-form');
+    const formData = new FormData(form);
+    const newAlumnus = Object.fromEntries(formData.entries());
+
+    for (const key in newAlumnus) {
+        if (newAlumnus[key] === '') newAlumnus[key] = null;
+    }
+
+    const { error } = await _supabase.from('alumni').insert([newAlumnus]);
+
+    if (error) {
+        console.error('Error adding new alumni:', error);
+        alert('Gagal menambahkan data: ' + error.message);
+    } else {
+        alert('Data berhasil ditambahkan!');
+        closeAddDataPopup();
+        fetchAlumniData();
+    }
+});
+
+// --- Spreadsheet Input Logic ---
+document.getElementById('spreadsheet-input-btn').addEventListener('click', () => {
+  document.getElementById('add-method-choice-popup').style.display = 'none'; // Hide choice
+  populateSpreadsheetForm();
+  document.getElementById('spreadsheet-popup-container').style.display = 'flex'; // Show spreadsheet
+  // no-scroll is already active
+});
+
+function closeSpreadsheetPopup() {
+  document.getElementById('spreadsheet-popup-container').style.display = 'none';
+  document.body.classList.remove('no-scroll');
+}
+
+document.getElementById('close-spreadsheet-popup-btn').addEventListener('click', closeSpreadsheetPopup);
+
+let spreadsheetHeaders = [];
+
+function populateSpreadsheetForm() {
+    const table = document.getElementById('spreadsheet-table');
+    const thead = table.querySelector('thead');
+    const tbody = table.querySelector('tbody');
+    thead.innerHTML = '';
+    tbody.innerHTML = '';
+
+    spreadsheetHeaders = allHeaders.filter(header => header !== 'id');
+    const headerRow = document.createElement('tr');
+    spreadsheetHeaders.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header.replace(/_/g, ' ').toUpperCase();
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+
+    // Start with one empty row
+    addSpreadsheetRow();
+}
+
+function addSpreadsheetRow() {
+    const tbody = document.getElementById('spreadsheet-table').querySelector('tbody');
+    const row = document.createElement('tr');
+    spreadsheetHeaders.forEach(header => {
+        const cell = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = header;
+        cell.appendChild(input);
+        row.appendChild(cell);
+    });
+    tbody.appendChild(row);
+}
+
+document.getElementById('add-spreadsheet-row-btn').addEventListener('click', addSpreadsheetRow);
+
+document.getElementById('submit-spreadsheet-data-btn').addEventListener('click', async () => {
+    const tbody = document.getElementById('spreadsheet-table').querySelector('tbody');
+    const rows = tbody.querySelectorAll('tr');
+    const dataToInsert = [];
+
+    rows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const newAlumnus = {};
+        let isEmptyRow = true;
+        inputs.forEach(input => {
+            const value = input.value.trim();
+            newAlumnus[input.name] = value === '' ? null : value;
+            if (value !== '') {
+                isEmptyRow = false;
+            }
+        });
+
+        if (!isEmptyRow) {
+            dataToInsert.push(newAlumnus);
+        }
+    });
+
+    if (dataToInsert.length === 0) {
+        alert('Tidak ada data untuk disimpan.');
+        return;
+    }
+
+    const { error } = await _supabase.from('alumni').insert(dataToInsert);
+
+    if (error) {
+        console.error('Error adding new alumni:', error);
+        alert('Gagal menambahkan data: ' + error.message);
+    } else {
+        alert(`${dataToInsert.length} data berhasil ditambahkan!`);
+        closeSpreadsheetPopup();
+        fetchAlumniData();
+    }
+});
+
+
 fetchAlumniData();

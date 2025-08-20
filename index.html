@@ -24,6 +24,7 @@
     <button id="toggle-columns-btn" class="menu-button">Pilih Kolom</button>
     <button id="toggle-pagination-btn" class="menu-button">Atur Paginasi</button>
     <button id="toggle-sort-btn" class="menu-button">Urutkan Tabel</button>
+    <button id="add-data-btn" class="menu-button">Tambah Data</button>
   </div>
 
   <div id="alumni-container">
@@ -96,6 +97,56 @@
       <div class="popup-footer">
         <button id="apply-sort-btn" class="primary">Terapkan</button>
       </div>
+    </div>
+  </div>
+
+  <div id="add-method-choice-popup" class="popup-overlay" style="display: none;">
+    <div class="popup-content" style="max-width: 450px;">
+      <div class="popup-header">
+        <h2>Pilih Metode Input Data</h2>
+        <button id="close-choice-popup-btn" class="close-button">&times;</button>
+      </div>
+      <div class="popup-body" style="text-align: center; padding: 30px; display: flex; justify-content: center; gap: 10px;">
+        <button id="manual-input-btn" class="menu-button">Manual</button>
+        <button id="spreadsheet-input-btn" class="menu-button">Tabel</button>
+        <a href="import.html" class="menu-button" style="text-decoration: none;">Import CSV</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="add-data-popup-container" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+      <div class="popup-header">
+        <h2>Tambah Data Alumni (Manual)</h2>
+        <button id="close-add-data-popup-btn" class="close-button">&times;</button>
+      </div>
+      <div class="popup-body">
+        <form id="add-data-form"></form>
+      </div>
+      <div class="popup-footer">
+        <button id="submit-add-data-btn" class="primary">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="spreadsheet-popup-container" class="popup-overlay" style="display: none;">
+    <div class="popup-content" style="max-width: 90vw;">
+        <div class="popup-header">
+            <h2>Tambah Data Alumni (Tabel)</h2>
+            <button id="close-spreadsheet-popup-btn" class="close-button">&times;</button>
+        </div>
+        <div class="popup-body" style="max-height: 60vh;">
+            <div id="spreadsheet-table-container" style="overflow: auto;">
+                <table id="spreadsheet-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="popup-footer">
+            <button id="add-spreadsheet-row-btn">Tambah Baris</button>
+            <button id="submit-spreadsheet-data-btn" class="primary">Simpan Semua</button>
+        </div>
     </div>
   </div>
 

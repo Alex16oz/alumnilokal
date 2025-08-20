@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import CSV</title>
+    <link href="style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Import Data Alumni dari CSV</h1>
+        <a href="index.html" class="menu-button" style="text-decoration: none;">Kembali</a>
+    </nav>
+
+    <div class="menu-container">
+        <h2>Langkah 1: Pilih File CSV</h2>
+        <p>Pastikan file CSV Anda memiliki header yang sesuai dengan kolom tabel. Kolom 'id' akan diabaikan dan dibuat secara otomatis.</p>
+        <input type="file" id="csv-file-input" accept=".csv">
+    </div>
+
+    <div id="status-container" class="menu-container" style="display: none;">
+        <h2>Langkah 2: Validasi & Pratinjau Data</h2>
+        <p id="status-message"></p>
+        <div id="preview-container" style="max-height: 40vh; overflow: auto;">
+            </div>
+    </div>
+    
+    <div class="menu-container">
+        <h2>Langkah 3: Simpan ke Database</h2>
+        <button id="save-data-btn" class="menu-button" disabled>Simpan ke Database</button>
+    </div>
+
+    <script src="import.js"></script>
+</body>
+</html>
