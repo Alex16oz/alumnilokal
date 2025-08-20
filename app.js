@@ -180,16 +180,27 @@ function populateColumnSelectionPopup(selectedHeaders) {
   columnSelectionContainer.innerHTML = '';
   allHeaders.forEach(header => {
     const label = document.createElement('label');
-    label.className = 'container'; 
+    label.className = 'container';
+
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.value = header;
     checkbox.checked = selectedHeaders.includes(header);
-    const checkmark = document.createElement('div');
-    checkmark.className = 'checkmark';
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 64 64');
+    
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16');
+    path.setAttribute('pathLength', '575.0541381835938');
+    path.classList.add('path');
+
+    svg.appendChild(path);
+    
     label.appendChild(checkbox);
-    label.appendChild(checkmark);
+    label.appendChild(svg);
     label.appendChild(document.createTextNode(` ${header.replace(/_/g, ' ').toUpperCase()}`));
+    
     columnSelectionContainer.appendChild(label);
   });
 }
