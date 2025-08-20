@@ -449,4 +449,74 @@ document.getElementById('submit-add-data-btn').addEventListener('click', async (
     }
 });
 
+// --- Download Data Functionality ---
+
+document.getElementById('download-data-btn').addEventListener('click', () => {
+  document.getElementById('download-popup-container').style.display = 'flex';
+  document.body.classList.add('no-scroll');
+});
+
+function closeDownloadPopup() {
+  document.getElementById('download-popup-container').style.display = 'none';
+  document.body.classList.remove('no-scroll');
+}
+
+document.getElementById('close-download-popup-btn').addEventListener('click', closeDownloadPopup);
+
+function getVisibleData() {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    return allAlumniData.slice(start, end).map(row => {
+        const visibleRow = {};
+        currentTableHeaders.forEach(header => {
+            visibleRow[header] = row[header];
+        });
+        return visibleRow;
+    });
+}
+
+document.getElementById('download-csv-btn').addEventListener('click', () => {
+  const data = getVisibleData();
+  if (data.length === 0) {
+    alert('Tidak ada data untuk diunduh.');
+    return;
+  }
+  
+  const headers = currentTableHeaders.join(',');
+  const rows = data.map(row => 
+    currentTableHeaders.map(header => 
+      JSON.stringify(row[header], (key, value) => value === null ? '' : value)
+    ).join(',')
+  );
+  
+  const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + rows.join("\n");
+  
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "alumni_data.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  closeDownloadPopup();
+});
+
+document.getElementById('download-json-btn').addEventListener('click', () => {
+  const data = getVisibleData();
+  if (data.length === 0) {
+    alert('Tidak ada data untuk diunduh.');
+    return;
+  }
+
+  const jsonContent = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+  const link = document.createElement("a");
+  link.setAttribute("href", jsonContent);
+  link.setAttribute("download", "alumni_data.json");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  closeDownloadPopup();
+});
+
+
 fetchAlumniData();

@@ -25,6 +25,7 @@
     <button id="toggle-pagination-btn" class="menu-button">Atur Paginasi</button>
     <button id="toggle-sort-btn" class="menu-button">Urutkan Tabel</button>
     <button id="add-data-btn" class="menu-button">Tambah Data</button>
+    <button id="download-data-btn" class="menu-button">Unduh Data</button>
   </div>
 
   <div id="alumni-container">
@@ -124,6 +125,20 @@
       </div>
       <div class="popup-footer">
         <button id="submit-add-data-btn" class="primary">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="download-popup-container" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+      <div class="popup-header">
+        <h2>Unduh Data</h2>
+        <button id="close-download-popup-btn" class="close-button">&times;</button>
+      </div>
+      <div class="popup-body" style="text-align: center;">
+        <p>Pilih format file untuk unduh data yang ditampilkan saat ini.</p>
+        <button id="download-csv-btn" class="menu-button">Unduh CSV</button>
+        <button id="download-json-btn" class="menu-button">Unduh JSON</button>
       </div>
     </div>
   </div>
