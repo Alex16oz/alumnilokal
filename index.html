@@ -82,8 +82,8 @@
           <option value="5">5</option>
           <option value="10">10</option>
           <option value="15">15</option>
-          <option value="20">20</option>
-          <option value="25" selected>25</option>
+          <option value="20" selected>20</option>
+          <option value="25">25</option>
           <option value="50">50</option>
           <option value="100">100</option>
           <option value="all">Semua</option>
@@ -171,6 +171,21 @@
         <button id="download-csv-btn" class="menu-button">Unduh CSV</button>
         <button id="download-json-btn" class="menu-button">Unduh JSON</button>
         <button id="download-xlsx-btn" class="menu-button">Unduh XLSX</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="download-selected-popup-container" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+      <div class="popup-header">
+        <h2>Unduh Data Pilihan</h2>
+        <button id="close-download-selected-popup-btn" class="close-button">&times;</button>
+      </div>
+      <div class="popup-body" style="text-align: center;">
+        <p>Pilih format file untuk unduh data yang dipilih.</p>
+        <button id="download-selected-csv-btn" class="menu-button">Unduh CSV</button>
+        <button id="download-selected-json-btn" class="menu-button">Unduh JSON</button>
+        <button id="download-selected-xlsx-btn" class="menu-button">Unduh XLSX</button>
       </div>
     </div>
   </div>

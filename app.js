@@ -529,7 +529,16 @@ document.getElementById('copy-selected-btn').addEventListener('click', () => {
 });
 
 document.getElementById('download-selected-btn').addEventListener('click', () => {
+    closeAllPopups();
+    document.getElementById('download-selected-popup-container').style.display = 'flex';
+    document.body.classList.add('no-scroll');
+});
+
+document.getElementById('close-download-selected-popup-btn').addEventListener('click', closeAllPopups);
+
+document.getElementById("download-selected-csv-btn").addEventListener("click", () => {
     const selectedData = allAlumniData.filter(alumnus => selectedAlumniIds.has(alumnus[primaryKeyColumn]));
+    if (selectedData.length === 0) return alert("Tidak ada data untuk diunduh.");
     const headers = currentTableHeaders.join(",");
     const rows = selectedData.map(row => currentTableHeaders.map(header => JSON.stringify(row[header], (key, value) => value === null ? "" : value)).join(","));
     const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + rows.join("\n");
@@ -539,7 +548,32 @@ document.getElementById('download-selected-btn').addEventListener('click', () =>
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    closeAllPopups()
 });
+
+document.getElementById("download-selected-json-btn").addEventListener("click", () => {
+    const selectedData = allAlumniData.filter(alumnus => selectedAlumniIds.has(alumnus[primaryKeyColumn]));
+    if (selectedData.length === 0) return alert("Tidak ada data untuk diunduh.");
+    const jsonContent = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(selectedData, null, 2));
+    const link = document.createElement("a");
+    link.setAttribute("href", jsonContent);
+    link.setAttribute("download", "alumni_data_pilihan.json");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    closeAllPopups()
+});
+
+document.getElementById("download-selected-xlsx-btn").addEventListener("click", () => {
+    const selectedData = allAlumniData.filter(alumnus => selectedAlumniIds.has(alumnus[primaryKeyColumn]));
+    if (selectedData.length === 0) return alert("Tidak ada data untuk diunduh.");
+    const worksheet = XLSX.utils.json_to_sheet(selectedData, { header: currentTableHeaders });
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Alumni Pilihan");
+    XLSX.writeFile(workbook, "alumni_data_pilihan.xlsx");
+    closeAllPopups()
+});
+
 
 document.getElementById('delete-selected-btn').addEventListener('click', async () => {
     if (selectedAlumniIds.size === 0) return;
