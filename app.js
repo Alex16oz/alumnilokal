@@ -337,24 +337,61 @@ function closeAddDataPopup() {
 
 document.getElementById('close-add-data-popup-btn').addEventListener('click', closeAddDataPopup);
 
+// --- MODIFIED FUNCTION ---
 function populateAddDataForm() {
     const form = document.getElementById('add-data-form');
     form.innerHTML = '';
     const formHeaders = allHeaders.filter(header => header !== 'id');
+
     formHeaders.forEach(header => {
         const label = document.createElement('label');
         label.textContent = header.replace(/_/g, ' ').toUpperCase();
-        const input = document.createElement('input');
-        input.type = columnTypes[header] || 'text';
+        form.appendChild(label);
+
+        let input; // Declare input/select element variable
+
+        if (header === 'sudah_bekerja') {
+            input = document.createElement('select');
+            const options = ['Belum Bekerja', 'Sudah Bekerja'];
+            options.forEach(optText => {
+                const option = document.createElement('option');
+                option.value = optText;
+                option.textContent = optText;
+                input.appendChild(option);
+            });
+        } else if (header === 'pekerjaan_sesuai') {
+            input = document.createElement('select');
+            // Add a default/null option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = ''; // Represents NULL
+            defaultOption.textContent = '-- Pilih Kesesuaian --';
+            defaultOption.selected = true;
+            input.appendChild(defaultOption);
+
+            const options = ['Sesuai', 'Tidak Sesuai'];
+            options.forEach(optText => {
+                const option = document.createElement('option');
+                option.value = optText;
+                option.textContent = optText;
+                input.appendChild(option);
+            });
+        } else {
+            input = document.createElement('input');
+            input.type = columnTypes[header] || 'text';
+        }
+
+        // Common attributes for both input and select
         input.name = header;
         input.style.width = '100%';
         input.style.padding = '8px';
         input.style.marginBottom = '10px';
         input.style.boxSizing = 'border-box';
-        form.appendChild(label);
+        // Add a class for easier styling if needed
+        input.classList.add('form-input-element'); 
         form.appendChild(input);
     });
 }
+
 
 // --- FUNGSI YANG DISEMPURNAKAN DENGAN PENGECEKAN DUPLIKAT ---
 document.getElementById('submit-add-data-btn').addEventListener('click', async () => {
