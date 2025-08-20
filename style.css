@@ -361,35 +361,3 @@ tbody tr:hover td {
 #sort-popup-container .popup-body div {
     margin-top: 15px;
 }
-
-/* Styles for Spreadsheet Input Table */
-#spreadsheet-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-#spreadsheet-table th, #spreadsheet-table td {
-    border: 1px solid #ccc;
-    padding: 2px;
-}
-
-#spreadsheet-table th {
-    background-color: #f0f0f0;
-    padding: 8px;
-    text-align: center;
-    font-size: 0.9em;
-    color: #333;
-}
-
-#spreadsheet-table input[type="text"] {
-    width: 100%;
-    border: none;
-    padding: 8px;
-    box-sizing: border-box;
-    background-color: transparent;
-}
-
-#spreadsheet-table input[type="text"]:focus {
-    outline: 2px solid #007bff;
-    background-color: #e9f5ff;
-}
