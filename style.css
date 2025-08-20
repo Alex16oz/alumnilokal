@@ -61,22 +61,40 @@ body.no-scroll {
 .menu-container {
   padding: 10px 20px;
   text-align: left;
+  display: flex; /* Menggunakan flexbox untuk menyatukan tombol */
 }
 
 .menu-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
+  background-color: #cbe5ff; /* Warna latar belakang minimalis */
+  color: #343a40; /* Warna teks yang kontras */
+  border: 1px solid #dee2e6; /* Border tipis */
   padding: 10px 20px;
-  margin-right: 10px;
-  border-radius: 5px;
   cursor: pointer;
   font-size: 1em;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, color 0.2s;
+  margin-right: -1px; /* Menghilangkan spasi antar tombol */
+}
+
+.menu-button:first-child {
+  border-top-left-radius: 8px; /* Sudut bulat di kiri atas */
+  border-bottom-left-radius: 8px; /* Sudut bulat di kiri bawah */
+}
+
+.menu-button:last-child {
+  border-top-right-radius: 8px; /* Sudut bulat di kanan atas */
+  border-bottom-right-radius: 8px; /* Sudut bulat di kanan bawah */
 }
 
 .menu-button:hover {
-  background-color: #0056b3;
+  background-color: #e9ecef; /* Warna saat kursor di atas tombol */
+  color: #0056b3;
+}
+
+.menu-button:focus {
+  outline: none; /* Menghilangkan outline default */
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* Menambah fokus modern */
+  z-index: 1; /* Memastikan shadow terlihat di atas tombol lain */
+  position: relative;
 }
 
 /* Style untuk Tombol Ikon */
