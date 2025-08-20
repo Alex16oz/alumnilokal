@@ -361,3 +361,58 @@ tbody tr:hover td {
 #sort-popup-container .popup-body div {
     margin-top: 15px;
 }
+/* ... (CSS Anda yang sudah ada) ... */
+
+/* Gaya untuk Filter Popup Lanjutan */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.filter-row select, .filter-row input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9em;
+  box-sizing: border-box; /* Tambahkan ini */
+}
+
+.filter-column {
+  flex: 3; /* Perbesar sedikit */
+}
+
+.filter-operator {
+  flex: 3; /* Perbesar sedikit */
+}
+
+.filter-value-container {
+  flex: 4; /* Perbesar sedikit */
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.filter-value-container input, .filter-value-container select {
+  width: 100%;
+}
+
+.remove-filter-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px; /* Sedikit lebih besar */
+  height: 28px; /* Sedikit lebih besar */
+  cursor: pointer;
+  font-size: 1.4em; /* Perbesar ikon */
+  line-height: 28px;
+  text-align: center;
+  padding: 0;
+  flex-shrink: 0; /* Mencegah tombol menyusut */
+}
+
+.remove-filter-btn:hover {
+  background-color: #c82333;
+}

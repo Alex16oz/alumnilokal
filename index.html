@@ -25,6 +25,7 @@
     <button id="toggle-columns-btn" class="menu-button">Pilih Kolom</button>
     <button id="toggle-pagination-btn" class="menu-button">Atur Paginasi</button>
     <button id="toggle-sort-btn" class="menu-button">Urutkan Tabel</button>
+    <button id="filter-btn" class="menu-button">Filter</button>
     <button id="add-data-btn" class="menu-button">Tambah Data</button>
     <button id="download-data-btn" class="menu-button">Unduh Data</button>
   </div>
@@ -100,6 +101,23 @@
         <button id="apply-sort-btn" class="primary">Terapkan</button>
       </div>
     </div>
+  </div>
+
+  <div id="filter-popup-container" class="popup-overlay" style="display: none;">
+      <div class="popup-content" style="max-width: 700px;">
+          <div class="popup-header">
+              <h2>Filter Tabel</h2>
+              <button id="close-filter-popup-btn" class="close-button">&times;</button>
+          </div>
+          <div class="popup-body">
+              <div id="filter-conditions-container"></div>
+              <button id="add-filter-btn" class="menu-button" style="margin-top: 10px;">+ Tambah Filter</button>
+          </div>
+          <div class="popup-footer">
+              <button id="apply-filters-btn" class="primary">Terapkan Filter</button>
+              <button id="reset-filters-btn">Reset Semua Filter</button>
+          </div>
+      </div>
   </div>
 
   <div id="add-method-choice-popup" class="popup-overlay" style="display: none;">
