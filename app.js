@@ -16,6 +16,8 @@ let currentTableHeaders = [];
 let currentSort = { column: null, direction: 'asc' };
 let currentFilters = [];
 let selectedAlumnusId = null;
+let selectedAlumniIds = new Set();
+let isSelectMode = false;
 
 // Variabel Paginasi
 let currentPage = 1;
@@ -63,6 +65,28 @@ function renderTableStructure() {
   tbody.id = 'alumni-tbody';
   const headerRow = document.createElement('tr');
 
+  if (isSelectMode) {
+    const thCheckbox = document.createElement('th');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = 'select-all-header-checkbox';
+    checkbox.addEventListener('change', (e) => {
+      const isChecked = e.target.checked;
+      document.querySelectorAll('#alumni-tbody tr .row-checkbox').forEach(cb => {
+        cb.checked = isChecked;
+        const id = cb.closest('tr').dataset.id;
+        if (isChecked) {
+          selectedAlumniIds.add(id);
+        } else {
+          selectedAlumniIds.delete(id);
+        }
+      });
+      updateActionButtonsState();
+    });
+    thCheckbox.appendChild(checkbox);
+    headerRow.appendChild(thCheckbox);
+  }
+
   currentTableHeaders.forEach(headerText => {
     const th = document.createElement('th');
     th.textContent = headerText.replace(/_/g, ' ').toUpperCase();
@@ -78,6 +102,7 @@ function renderTableStructure() {
   alumniContainer.appendChild(table);
 }
 
+
 function displayPage(page) {
     const tbody = document.getElementById('alumni-tbody');
     if (!tbody) return;
@@ -90,7 +115,27 @@ function displayPage(page) {
 
     paginatedItems.forEach(alumnus => {
         const row = document.createElement('tr');
-        row.dataset.id = alumnus[primaryKeyColumn]; // Simpan ID di data attribute
+        row.dataset.id = alumnus[primaryKeyColumn]; 
+
+        if (isSelectMode) {
+            const cellCheckbox = document.createElement('td');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'row-checkbox';
+            checkbox.checked = selectedAlumniIds.has(alumnus[primaryKeyColumn]);
+            checkbox.addEventListener('change', (e) => {
+                const id = alumnus[primaryKeyColumn];
+                if (e.target.checked) {
+                    selectedAlumniIds.add(id);
+                } else {
+                    selectedAlumniIds.delete(id);
+                }
+                updateActionButtonsState();
+            });
+            cellCheckbox.appendChild(checkbox);
+            row.appendChild(cellCheckbox);
+        }
+
 
         currentTableHeaders.forEach(header => {
             const cell = document.createElement('td');
@@ -98,31 +143,31 @@ function displayPage(page) {
             row.appendChild(cell);
         });
 
-        // Tambahkan event listener untuk pemilihan baris
-        row.addEventListener('click', () => {
-            handleRowSelection(alumnus[primaryKeyColumn]);
+        row.addEventListener('click', (e) => {
+            if (e.target.type !== 'checkbox' && !isSelectMode) {
+                 handleRowSelection(alumnus[primaryKeyColumn]);
+            }
         });
 
         tbody.appendChild(row);
     });
 
-    // Reset pemilihan jika halaman berubah
     deselectRow(); 
     updatePaginationInfo();
 }
 
 
 function handleRowSelection(id) {
+    if (isSelectMode) return; // Nonaktifkan saat mode pilih
+
     const editBtn = document.getElementById('edit-data-btn');
     const deleteBtn = document.getElementById('delete-data-btn');
 
-    // Deselect jika ID yang sama diklik lagi
     if (selectedAlumnusId === id) {
         deselectRow();
         return;
     }
 
-    // Hapus highlight dari baris sebelumnya
     if (selectedAlumnusId) {
         const previousSelectedRow = document.querySelector(`tr[data-id="${selectedAlumnusId}"]`);
         if (previousSelectedRow) {
@@ -130,14 +175,12 @@ function handleRowSelection(id) {
         }
     }
 
-    // Highlight baris baru dan simpan ID-nya
     selectedAlumnusId = id;
     const newSelectedRow = document.querySelector(`tr[data-id="${id}"]`);
     if (newSelectedRow) {
         newSelectedRow.classList.add('selected');
     }
 
-    // Tampilkan tombol Edit dan Hapus
     editBtn.style.display = 'inline-block';
     deleteBtn.style.display = 'inline-block';
 }
@@ -154,7 +197,6 @@ function deselectRow() {
     }
     selectedAlumnusId = null;
 
-    // Sembunyikan tombol Edit dan Hapus
     editBtn.style.display = 'none';
     deleteBtn.style.display = 'none';
 }
@@ -178,7 +220,6 @@ function updatePaginationInfo() {
   document.getElementById('next-page-btn').disabled = currentPage === totalPages;
   document.getElementById('last-page-btn').disabled = currentPage === totalPages;
 }
-
 
 // --- FUNGSI UTILITAS TABEL ---
 
@@ -445,6 +486,29 @@ function applyFiltersAndSort() {
     deselectRow();
 }
 
+function updateActionButtonsState() {
+    const hasSelection = selectedAlumniIds.size > 0;
+    document.getElementById('copy-selected-btn').disabled = !hasSelection;
+    document.getElementById('download-selected-btn').disabled = !hasSelection;
+    document.getElementById('delete-selected-btn').disabled = !hasSelection;
+}
+
+function toggleSelectMode() {
+    isSelectMode = !isSelectMode;
+    selectedAlumniIds.clear();
+    
+    document.getElementById('main-menu-container').style.display = isSelectMode ? 'none' : 'flex';
+    document.getElementById('selection-actions-container').style.display = isSelectMode ? 'flex' : 'none';
+
+    if (isSelectMode) {
+        deselectRow(); // Hapus highlight baris tunggal saat masuk mode pilih
+        updateActionButtonsState();
+    }
+    
+    renderTableStructure();
+    displayPage(currentPage);
+}
+
 // --- EVENT LISTENERS ---
 
 function closeAllPopups() {
@@ -453,6 +517,46 @@ function closeAllPopups() {
     });
     document.body.classList.remove('no-scroll');
 }
+document.getElementById('select-mode-btn').addEventListener('click', toggleSelectMode);
+document.getElementById('cancel-selection-btn').addEventListener('click', toggleSelectMode);
+
+
+document.getElementById('copy-selected-btn').addEventListener('click', () => {
+    const selectedData = allAlumniData.filter(alumnus => selectedAlumniIds.has(alumnus[primaryKeyColumn]));
+    navigator.clipboard.writeText(JSON.stringify(selectedData, null, 2))
+        .then(() => alert('Data yang dipilih telah disalin ke clipboard.'))
+        .catch(err => console.error('Gagal menyalin data: ', err));
+});
+
+document.getElementById('download-selected-btn').addEventListener('click', () => {
+    const selectedData = allAlumniData.filter(alumnus => selectedAlumniIds.has(alumnus[primaryKeyColumn]));
+    const headers = currentTableHeaders.join(",");
+    const rows = selectedData.map(row => currentTableHeaders.map(header => JSON.stringify(row[header], (key, value) => value === null ? "" : value)).join(","));
+    const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + rows.join("\n");
+    const link = document.createElement("a");
+    link.setAttribute("href", encodeURI(csvContent));
+    link.setAttribute("download", "alumni_data_pilihan.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
+document.getElementById('delete-selected-btn').addEventListener('click', async () => {
+    if (selectedAlumniIds.size === 0) return;
+    if (confirm(`Anda yakin ingin menghapus ${selectedAlumniIds.size} item yang dipilih?`)) {
+        const idsToDelete = Array.from(selectedAlumniIds);
+        const { error } = await _supabase.from('alumni').delete().in(primaryKeyColumn, idsToDelete);
+        if (error) {
+            alert('Gagal menghapus data: ' + error.message);
+        } else {
+            alert('Data yang dipilih berhasil dihapus.');
+            selectedAlumniIds.clear();
+            updateActionButtonsState();
+            fetchAlumniData();
+        }
+    }
+});
+
 
 document.getElementById('toggle-columns-btn').addEventListener('click', () => { closeAllPopups(); document.getElementById('popup-container').style.display = 'flex'; document.body.classList.add('no-scroll'); });
 document.getElementById('toggle-pagination-btn').addEventListener('click', () => { closeAllPopups(); document.getElementById('pagination-popup-container').style.display = 'flex'; document.body.classList.add('no-scroll'); });

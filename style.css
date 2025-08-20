@@ -58,10 +58,21 @@ body.no-scroll {
 
 .show {display: block;}
 
+.menu-controls-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
 .menu-container {
   padding: 10px 20px;
   text-align: left;
   display: flex; /* Menggunakan flexbox untuk menyatukan tombol */
+}
+
+#selection-actions-container {
+  display: flex;
 }
 
 .menu-button {
@@ -104,16 +115,17 @@ body.no-scroll {
 }
 
 .icon-button.edit-icon {
-    background-color: #28a745; /* Warna hijau untuk edit */
+    background-color: #ece800; /* Warna hijau untuk edit */
 }
 .icon-button.edit-icon:hover {
-    background-color: #218838;
+    background-color: #d3d003;
 }
 
-.icon-button.delete-icon {
+.icon-button.delete-icon, #selection-actions-container .delete-icon {
     background-color: #dc3545; /* Warna merah untuk hapus */
+    color: white;
 }
-.icon-button.delete-icon:hover {
+.icon-button.delete-icon:hover, #selection-actions-container .delete-icon:hover {
     background-color: #c82333;
 }
 
