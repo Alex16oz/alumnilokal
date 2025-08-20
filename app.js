@@ -5,14 +5,40 @@ const supabaseUrl = 'https://sgnavqdkkglhesglhrdi.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnbmF2cWRra2dsaGVzZ2xocmRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0ODcyMzEsImV4cCI6MjA2NDA2MzIzMX0.nRQXlWwf-9CRjQVsff45aShM1_-WAqY1DZ0ND8r_i04'
 const _supabase = createClient(supabaseUrl, supabaseKey)
 
+// --- Variabel Konfigurasi ---
+// Ganti 'email' dengan nama kolom yang Anda gunakan sebagai primary key unik.
+const primaryKeyColumn = 'email'; 
+
 let allAlumniData = [];
 let allHeaders = [];
+let columnTypes = {}; 
 let currentTableHeaders = [];
 let currentSort = { column: null, direction: 'asc' };
 
 // Variabel Paginasi
 let currentPage = 1;
-let rowsPerPage = 20; // Nilai default
+let rowsPerPage = 20; 
+
+function inferAndStoreColumnTypes() {
+  if (allAlumniData.length === 0) return;
+
+  const firstRow = allAlumniData[0];
+  allHeaders.forEach(header => {
+    const value = firstRow[header];
+    if (value === null || value === undefined) {
+      columnTypes[header] = 'text'; 
+    } else if (!isNaN(Date.parse(value)) && isNaN(value)) {
+        columnTypes[header] = 'date';
+    } else if (!isNaN(value) && value.toString().indexOf('.') === -1) {
+      columnTypes[header] = 'number';
+    } else if (typeof value === 'string' && value.includes('@')) {
+      columnTypes[header] = 'email';
+    } else {
+      columnTypes[header] = 'text'; 
+    }
+  });
+}
+
 
 async function fetchAlumniData() {
   const { data, error } = await _supabase.from('alumni').select('*');
@@ -23,9 +49,10 @@ async function fetchAlumniData() {
   allAlumniData = data;
   if (data.length > 0) {
     allHeaders = Object.keys(data[0]);
+    inferAndStoreColumnTypes(); 
   }
 
-  currentTableHeaders = allHeaders; // Secara default pilih semua kolom
+  currentTableHeaders = allHeaders; 
   renderTableStructure();
   displayPage(currentPage);
   setupPagination();
@@ -135,7 +162,7 @@ function populatePopup(selectedHeaders) {
   columnSelectionContainer.innerHTML = '';
   allHeaders.forEach(header => {
     const label = document.createElement('label');
-    label.className = 'container'; // Tambahkan kelas container
+    label.className = 'container'; 
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -174,7 +201,7 @@ document.getElementById('apply-columns-btn').addEventListener('click', () => {
   renderTableStructure();
   displayPage(1);
   setupPagination();
-  populateSortPopup(); // Update sort popup with new columns
+  populateSortPopup(); 
   closePopup();
 });
 
@@ -298,10 +325,9 @@ document.getElementById('close-choice-popup-btn').addEventListener('click', () =
 
 // --- Manual Input Logic ---
 document.getElementById('manual-input-btn').addEventListener('click', () => {
-  document.getElementById('add-method-choice-popup').style.display = 'none'; // Hide choice
+  document.getElementById('add-method-choice-popup').style.display = 'none'; 
   populateAddDataForm();
-  document.getElementById('add-data-popup-container').style.display = 'flex'; // Show manual form
-  // no-scroll is already active
+  document.getElementById('add-data-popup-container').style.display = 'flex'; 
 });
 
 function closeAddDataPopup() {
@@ -319,7 +345,7 @@ function populateAddDataForm() {
         const label = document.createElement('label');
         label.textContent = header.replace(/_/g, ' ').toUpperCase();
         const input = document.createElement('input');
-        input.type = 'text';
+        input.type = columnTypes[header] || 'text';
         input.name = header;
         input.style.width = '100%';
         input.style.padding = '8px';
@@ -330,20 +356,55 @@ function populateAddDataForm() {
     });
 }
 
+// --- FUNGSI YANG DISEMPURNAKAN DENGAN PENGECEKAN DUPLIKAT ---
 document.getElementById('submit-add-data-btn').addEventListener('click', async () => {
     const form = document.getElementById('add-data-form');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
     const formData = new FormData(form);
     const newAlumnus = Object.fromEntries(formData.entries());
 
+    // --- LOGIKA PENGECEKAN DUPLIKASI DIMULAI DI SINI ---
+    const primaryKeyValue = newAlumnus[primaryKeyColumn];
+
+    if (!primaryKeyValue) {
+        alert(`Kolom primary key '${primaryKeyColumn}' wajib diisi!`);
+        return;
+    }
+
+    // 1. Cek apakah nilai primary key sudah ada di database
+    const { data: existingData, error: selectError } = await _supabase
+        .from('alumni')
+        .select(primaryKeyColumn)
+        .eq(primaryKeyColumn, primaryKeyValue);
+
+    if (selectError) {
+        console.error('Error checking for duplicates:', selectError);
+        alert('Terjadi kesalahan saat memeriksa data: ' + selectError.message);
+        return;
+    }
+
+    // 2. Jika data ditemukan (panjang array > 0), berarti duplikat
+    if (existingData && existingData.length > 0) {
+        alert(`Data dengan ${primaryKeyColumn} '${primaryKeyValue}' sudah ada. Silakan gunakan nilai lain.`);
+        return; // Hentikan proses penyimpanan
+    }
+    // --- LOGIKA PENGECEKAN DUPLIKASI SELESAI ---
+
+
+    // 3. Jika tidak ada duplikat, lanjutkan proses penyimpanan
     for (const key in newAlumnus) {
         if (newAlumnus[key] === '') newAlumnus[key] = null;
     }
 
-    const { error } = await _supabase.from('alumni').insert([newAlumnus]);
+    const { error: insertError } = await _supabase.from('alumni').insert([newAlumnus]);
 
-    if (error) {
-        console.error('Error adding new alumni:', error);
-        alert('Gagal menambahkan data: ' + error.message);
+    if (insertError) {
+        console.error('Error adding new alumni:', insertError);
+        alert('Gagal menambahkan data: ' + insertError.message);
     } else {
         alert('Data berhasil ditambahkan!');
         closeAddDataPopup();
