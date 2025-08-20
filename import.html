@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Import CSV</title>
+    <title>Import Data</title>
     <link href="style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
     <nav class="navbar">
-        <h1>Import Data Alumni dari CSV</h1>
+        <h1>Import Data Alumni</h1>
         <a href="index.html" class="menu-button" style="text-decoration: none;">Kembali</a>
     </nav>
 
     <div class="menu-container">
-        <h2>Langkah 1: Pilih File CSV</h2>
-        <p>Pastikan file CSV Anda memiliki header yang sesuai dengan kolom tabel. Kolom 'id' akan diabaikan dan dibuat secara otomatis.</p>
-        <input type="file" id="csv-file-input" accept=".csv">
+        <h2>Langkah 1: Pilih File</h2>
+        <p>Pilih file dengan format CSV, JSON, atau XLSX. Pastikan file Anda memiliki header yang sesuai dengan kolom tabel. Kolom 'id' akan diabaikan.</p>
+        <input type="file" id="file-input" accept=".csv, .json, .xlsx">
     </div>
 
     <div id="status-container" class="menu-container" style="display: none;">
