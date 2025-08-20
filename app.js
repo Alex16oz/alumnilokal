@@ -15,6 +15,7 @@ let columnTypes = {};
 let currentTableHeaders = [];
 let currentSort = { column: null, direction: 'asc' };
 let currentFilters = [];
+let selectedAlumnusId = null;
 
 // Variabel Paginasi
 let currentPage = 1;
@@ -78,26 +79,86 @@ function renderTableStructure() {
 }
 
 function displayPage(page) {
-  const tbody = document.getElementById('alumni-tbody');
-  if (!tbody) return;
-  tbody.innerHTML = '';
-  currentPage = page;
+    const tbody = document.getElementById('alumni-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    currentPage = page;
 
-  const start = (page - 1) * rowsPerPage;
-  const end = start + rowsPerPage;
-  const paginatedItems = filteredAlumniData.slice(start, end);
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const paginatedItems = filteredAlumniData.slice(start, end);
 
-  paginatedItems.forEach(alumnus => {
-    const row = document.createElement('tr');
-    currentTableHeaders.forEach(header => {
-      const cell = document.createElement('td');
-      cell.textContent = alumnus[header] || '';
-      row.appendChild(cell);
+    paginatedItems.forEach(alumnus => {
+        const row = document.createElement('tr');
+        row.dataset.id = alumnus[primaryKeyColumn]; // Simpan ID di data attribute
+
+        currentTableHeaders.forEach(header => {
+            const cell = document.createElement('td');
+            cell.textContent = alumnus[header] || '';
+            row.appendChild(cell);
+        });
+
+        // Tambahkan event listener untuk pemilihan baris
+        row.addEventListener('click', () => {
+            handleRowSelection(alumnus[primaryKeyColumn]);
+        });
+
+        tbody.appendChild(row);
     });
-    tbody.appendChild(row);
-  });
-  updatePaginationInfo();
+
+    // Reset pemilihan jika halaman berubah
+    deselectRow(); 
+    updatePaginationInfo();
 }
+
+
+function handleRowSelection(id) {
+    const editBtn = document.getElementById('edit-data-btn');
+    const deleteBtn = document.getElementById('delete-data-btn');
+
+    // Deselect jika ID yang sama diklik lagi
+    if (selectedAlumnusId === id) {
+        deselectRow();
+        return;
+    }
+
+    // Hapus highlight dari baris sebelumnya
+    if (selectedAlumnusId) {
+        const previousSelectedRow = document.querySelector(`tr[data-id="${selectedAlumnusId}"]`);
+        if (previousSelectedRow) {
+            previousSelectedRow.classList.remove('selected');
+        }
+    }
+
+    // Highlight baris baru dan simpan ID-nya
+    selectedAlumnusId = id;
+    const newSelectedRow = document.querySelector(`tr[data-id="${id}"]`);
+    if (newSelectedRow) {
+        newSelectedRow.classList.add('selected');
+    }
+
+    // Tampilkan tombol Edit dan Hapus
+    editBtn.style.display = 'inline-block';
+    deleteBtn.style.display = 'inline-block';
+}
+
+function deselectRow() {
+    const editBtn = document.getElementById('edit-data-btn');
+    const deleteBtn = document.getElementById('delete-data-btn');
+
+    if (selectedAlumnusId) {
+        const selectedRow = document.querySelector(`tr[data-id="${selectedAlumnusId}"]`);
+        if (selectedRow) {
+            selectedRow.classList.remove('selected');
+        }
+    }
+    selectedAlumnusId = null;
+
+    // Sembunyikan tombol Edit dan Hapus
+    editBtn.style.display = 'none';
+    deleteBtn.style.display = 'none';
+}
+
 
 // --- FUNGSI PAGINASI ---
 
@@ -381,6 +442,7 @@ function applyFiltersAndSort() {
     filteredAlumniData = data;
     renderTableStructure();
     displayPage(1);
+    deselectRow();
 }
 
 // --- EVENT LISTENERS ---
@@ -398,6 +460,8 @@ document.getElementById('toggle-sort-btn').addEventListener('click', () => { clo
 document.getElementById('filter-btn').addEventListener('click', () => { closeAllPopups(); renderFilterPopup(); document.getElementById('filter-popup-container').style.display = 'flex'; document.body.classList.add('no-scroll'); });
 document.getElementById('add-data-btn').addEventListener('click', () => { closeAllPopups(); document.getElementById('add-method-choice-popup').style.display = 'flex'; document.body.classList.add('no-scroll'); });
 document.getElementById('download-data-btn').addEventListener('click', () => { closeAllPopups(); document.getElementById('download-popup-container').style.display = 'flex'; document.body.classList.add('no-scroll'); });
+document.getElementById('edit-data-btn').addEventListener('click', () => { alert(`Edit data: ${selectedAlumnusId}`); });
+document.getElementById('delete-data-btn').addEventListener('click', () => { alert(`Hapus data: ${selectedAlumnusId}`); });
 
 document.querySelectorAll('.close-button').forEach(btn => btn.addEventListener('click', closeAllPopups));
 document.getElementById('manual-input-btn').addEventListener('click', () => { closeAllPopups(); populateAddDataForm(); document.getElementById('add-data-popup-container').style.display = 'flex'; document.body.classList.add('no-scroll'); });

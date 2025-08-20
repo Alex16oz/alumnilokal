@@ -79,6 +79,27 @@ body.no-scroll {
   background-color: #0056b3;
 }
 
+/* Style untuk Tombol Ikon */
+.icon-button {
+    padding: 10px 12px;
+    font-size: 1em;
+}
+
+.icon-button.edit-icon {
+    background-color: #28a745; /* Warna hijau untuk edit */
+}
+.icon-button.edit-icon:hover {
+    background-color: #218838;
+}
+
+.icon-button.delete-icon {
+    background-color: #dc3545; /* Warna merah untuk hapus */
+}
+.icon-button.delete-icon:hover {
+    background-color: #c82333;
+}
+
+
 #alumni-container {
   margin: 0 20px 20px 20px;
   border-radius: 8px;
@@ -140,6 +161,12 @@ tbody tr:nth-child(even) td {
 
 tbody tr:hover td {
   background-color: #e9ecef;
+}
+
+/* Warna Highlight Baru */
+tbody tr.selected td {
+    background-color: #d1e7fd !important; /* Warna biru muda */
+    color: #0c63e4; /* Warna teks biru tua */
 }
 
 .popup-overlay {
