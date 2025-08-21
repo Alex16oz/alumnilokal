@@ -113,17 +113,14 @@ function generatePesertaPerTahunChart(data) {
     const chartData = sortedEntries.map(entry => entry[1]);
 
     renderChart({
-        type: 'line',
+        type: 'bar',
         labels,
         datasets: [{
             label: 'Jumlah Peserta',
             data: chartData,
-            fill: true,
-            backgroundColor: 'rgba(37, 99, 235, 0.2)',
-            borderColor: 'rgba(37, 99, 235, 1)',
-            tension: 0.1
+            backgroundColor: getChartColors(labels)
         }],
-        title: 'Tren Jumlah Peserta Pelatihan per Tahun'
+        title: 'Jumlah Peserta Pelatihan per Tahun'
     });
 }
 
