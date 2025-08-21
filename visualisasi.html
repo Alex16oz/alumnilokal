@@ -5,16 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualisasi Data</title>
     <link href="style.css" rel="stylesheet">
-</head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script> </head>
 <body>
     <nav class="navbar">
         <h1>Visualisasi Data Alumni</h1>
-        <a href="index.html" class="menu-button" style="text-decoration: none;">Kembali</a>
+        <a href="index.html" class="menu-button" style="text-decoration: none;">Kembali ke Tabel</a>
     </nav>
 
     <div class="menu-container">
-        <h2>Visualisasi</h2>
-        <p>Halaman ini akan berisi visualisasi data alumni.</p>
+        <h2>Pilih Analisis Data</h2>
+        <div id="analysis-buttons" style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <button class="menu-button" data-analysis="peserta_per_tahun">Jumlah Peserta per Tahun</button>
+            <button class="menu-button" data-analysis="distribusi_program">Distribusi Program Pelatihan</button>
+            <button class="menu-button" data-analysis="status_bekerja">Status Bekerja per Program</button>
+            <button class="menu-button" data-analysis="kesesuaian_pekerjaan">Kesesuaian Pekerjaan per Program</button>
+        </div>
+    </div>
+    
+    <div id="filter-container" class="menu-container" style="display: none;">
+        <h3>Filter Data</h3>
+        <div id="filter-controls">
+             </div>
+    </div>
+
+    <div class="menu-container" id="chart-container" style="display: none; min-height: 450px; position: relative;">
+         <canvas id="myChart"></canvas>
     </div>
 
     <script src="visualisasi.js"></script>
