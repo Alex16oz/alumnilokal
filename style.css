@@ -352,7 +352,7 @@ tbody tr.selected td {
 }
 
 .popup-footer button:hover {
-  background-color: #f1f5f9; /* Lighter gray */
+  background-color: #f1f5f9;
 }
 
 .popup-footer button.primary {
@@ -390,7 +390,7 @@ tbody tr.selected td {
 }
 
 #pagination-controls button:disabled {
-  background-color: #cbd5e1; /* Lighter gray */
+  background-color: #cbd5e1;
   cursor: not-allowed;
 }
 
@@ -439,55 +439,55 @@ tbody tr.selected td {
 #sort-popup-container .popup-body div {
     margin-top: 15px;
 }
-
 .filter-row {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-  margin-bottom: 15px;
+  flex-direction: row; /* Menyusun item secara horizontal */
+  align-items: center; /* Menjaga semua item tetap selaras di tengah secara vertikal */
+  gap: 10px; /* Memberi jarak antar elemen dalam satu baris */
+  margin-bottom: 15px; /* Memberi jarak antar baris filter jika ada lebih dari satu */
 }
 
-.filter-row select, .filter-row input {
-  padding: 8px;
-  border: 1px solid var(--neutral-border);
-  border-radius: 4px;
-  font-size: 0.9em;
-  box-sizing: border-box;
-  width: 100%;
+/* Menyesuaikan pertumbuhan elemen input agar proporsional */
+.filter-column {
+  flex: 3 1 0%; /* Memberi ruang lebih untuk nama kolom */
 }
-
-.filter-column { flex: 1; }
-.filter-operator { flex: 1; }
+.filter-operator {
+  flex: 2 1 0%; /* Ruang untuk operator filter */
+}
 .filter-value-container {
-  flex: 1;
+  flex: 3 1 0%; /* Ruang untuk input nilai */
   display: flex;
   align-items: center;
   gap: 5px;
 }
+
 .filter-value-container input, .filter-value-container select {
   width: 100%;
 }
 
+/* Mengubah tombol hapus menjadi ikon bulat agar lebih ringkas */
 .remove-filter-btn {
-  background-color: var(--danger-main);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  width: 100%;
+  background-color: transparent;
+  color: var(--danger-main);
+  border: 1px solid var(--danger-main);
+  border-radius: 50%;
+  width: 36px;
   height: 36px;
   cursor: pointer;
-  font-size: 1em;
-  line-height: 36px;
+  font-size: 1.2em;
+  line-height: 1;
   text-align: center;
   padding: 0;
-  flex-shrink: 0;
-  transition: background-color 0.2s;
-  margin-top: 5px;
+  flex-shrink: 0; /* Mencegah tombol mengecil */
+  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .remove-filter-btn:hover {
-  background-color: #B91C1C;
+  background-color: var(--danger-main);
+  color: white;
 }
 
 /* Import Page Styles */
@@ -623,7 +623,6 @@ tbody tr.selected td {
 /* === RESPONSIVE MEDIA QUERIES === */
 /* ================================== */
 
-/* Untuk Tablet dan Perangkat yang lebih kecil (<= 768px) */
 @media (max-width: 768px) {
   .navbar {
     padding: 15px;
@@ -663,7 +662,6 @@ tbody tr.selected td {
   }
 }
 
-/* Untuk Ponsel (<= 480px) */
 @media (max-width: 480px) {
   .navbar {
     flex-direction: column;
@@ -681,7 +679,7 @@ tbody tr.selected td {
     width: 100%;
     text-align: center;
     margin: 0;
-    border-radius: 8px !important; /* Hapus radius spesifik */
+    border-radius: 8px !important;
   }
 
   #pagination-controls {
