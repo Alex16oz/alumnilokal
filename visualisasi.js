@@ -11,6 +11,8 @@ const chartContainer = document.getElementById('chart-container');
 const chartCanvas = document.getElementById('myChart');
 const filterContainer = document.getElementById('filter-container');
 const filterControls = document.getElementById('filter-controls');
+const saveChartBtn = document.getElementById('save-chart-btn');
+
 
 let myChartInstance = null;
 let allAlumniData = [];
@@ -73,11 +75,21 @@ function setupEventListeners() {
             runAnalysis(analysisType);
         }
     });
+
+    saveChartBtn.addEventListener('click', () => {
+        if (myChartInstance) {
+            const link = document.createElement('a');
+            link.href = myChartInstance.toBase64Image();
+            link.download = `chart_${document.querySelector('#analysis-buttons button.primary').dataset.analysis}.png`;
+            link.click();
+        }
+    });
 }
 
 // 4. Router Analisis
 function runAnalysis(analysisType) {
     if (myChartInstance) myChartInstance.destroy();
+    saveChartBtn.style.display = 'none'; // Sembunyikan tombol saat chart baru dibuat
 
     // Selalu perbarui filter berdasarkan analisis yang dipilih
     populateFilters(analysisType);
@@ -196,8 +208,6 @@ function populateFilters(analysisType) {
                 select.innerHTML += `<option value="${value}">${value}</option>`;
             });
 
-            // **PERBAIKAN KUNCI DI SINI**
-            // Event listener sekarang akan selalu menjalankan analisis yang sedang aktif.
             select.addEventListener('change', () => {
                 const activeAnalysis = document.querySelector('#analysis-buttons button.primary').dataset.analysis;
                 runAnalysis(activeAnalysis);
@@ -230,10 +240,17 @@ function applyFilters() {
 }
 
 function renderChart({ type, labels, datasets, title, isStacked = false }) {
-    if (document.getElementById('myChart') === null) {
-        chartContainer.innerHTML = '<canvas id="myChart"></canvas>';
-    }
-    const ctx = document.getElementById('myChart').getContext('2d');
+    const canvasContainer = document.getElementById('chart-container');
+    
+    // Hapus canvas lama dan buat yang baru untuk menghindari masalah rendering
+    const oldCanvas = document.getElementById('myChart');
+    if(oldCanvas) oldCanvas.remove();
+    const newCanvas = document.createElement('canvas');
+    newCanvas.id = 'myChart';
+    canvasContainer.prepend(newCanvas); // prepend agar tombol simpan tetap di atas
+    
+    const ctx = newCanvas.getContext('2d');
+
 
     if (labels.length === 0) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -242,10 +259,13 @@ function renderChart({ type, labels, datasets, title, isStacked = false }) {
         ctx.textAlign = "center";
         ctx.fillText("Tidak ada data untuk ditampilkan dengan filter yang dipilih.", ctx.canvas.width / 2, 50);
         chartContainer.style.display = 'block';
+        saveChartBtn.style.display = 'none';
         return;
     }
-
+    
+    saveChartBtn.style.display = 'block'; // Tampilkan tombol simpan
     chartContainer.style.display = 'block';
+
     myChartInstance = new Chart(ctx, {
         type,
         data: { labels, datasets },

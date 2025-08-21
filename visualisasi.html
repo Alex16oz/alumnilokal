@@ -7,7 +7,8 @@
     <link href="style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script> </head>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
 <body>
     <nav class="navbar">
         <h1>Visualisasi Data Alumni</h1>
@@ -32,6 +33,7 @@
 
     <div class="menu-container" id="chart-container" style="display: none; min-height: 450px; position: relative;">
          <canvas id="myChart"></canvas>
+         <button id="save-chart-btn" class="menu-button" style="position: absolute; top: 10px; right: 10px; display: none;">Simpan Grafik</button>
     </div>
 
     <script src="visualisasi.js"></script>
