@@ -467,3 +467,125 @@ tbody tr.selected td {
 .remove-filter-btn:hover {
   background-color: #c82333;
 }
+
+/* Tambahan di akhir file style.css */
+
+.import-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.import-step-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  border: 1px solid #e0e0e0;
+}
+
+.import-step-card h3 {
+  margin-top: 0;
+  color: #007bff;
+  font-size: 1.4em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.import-step-card p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.file-input-label {
+  display: inline-block;
+  padding: 12px 25px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s;
+}
+
+.file-input-label:hover {
+  background-color: #0056b3;
+}
+
+.file-input-label i {
+  margin-right: 8px;
+}
+
+.file-name {
+  margin-left: 15px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+#status-message-wrapper {
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+/* Warna status dinamis akan diatur via JS */
+#status-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+#status-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  white-space: pre-wrap; /* Agar baris baru di pesan error tampil */
+}
+
+#status-message.info {
+  background-color: #cce5ff;
+  color: #004085;
+  border: 1px solid #b8daff;
+}
+
+#status-message.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+
+#preview-container table {
+  margin-top: 15px;
+}
+
+#preview-container h3 {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #333;
+}
+#preview-container h3:first-child {
+    margin-top: 0;
+}
+
+.primary-action {
+    background-color: #28a745;
+    color: white;
+    font-size: 1.1em !important;
+    padding: 15px 30px !important;
+}
+
+.primary-action:hover {
+    background-color: #218838;
+}
+
+.primary-action:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}

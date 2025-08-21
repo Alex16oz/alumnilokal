@@ -10,6 +10,9 @@ const statusContainer = document.getElementById('status-container');
 const statusMessage = document.getElementById('status-message');
 const previewContainer = document.getElementById('preview-container');
 const saveDataBtn = document.getElementById('save-data-btn');
+const saveCard = document.getElementById('save-card');
+const fileNameDisplay = document.getElementById('file-name-display');
+
 
 // Mendefinisikan struktur tabel alumni berdasarkan skema SQL
 const tableSchema = {
@@ -38,10 +41,14 @@ fileInput.addEventListener('change', handleFileSelect);
 
 async function handleFileSelect(event) {
     const file = event.target.files[0];
-    if (!file) return;
+    if (!file) {
+        fileNameDisplay.textContent = 'Tidak ada file yang dipilih.';
+        return;
+    };
+    fileNameDisplay.textContent = file.name;
 
     resetState();
-    showStatus('Memproses file...', 'blue');
+    showStatus('Memproses file...', 'info');
     
     const reader = new FileReader();
     const fileExtension = file.name.split('.').pop().toLowerCase();
@@ -65,7 +72,7 @@ async function handleFileSelect(event) {
             }
             await processData(parsedData);
         } catch (error) {
-            showStatus(error.message, 'red');
+            showStatus(error.message, 'error');
             saveDataBtn.disabled = true;
         }
     };
@@ -145,7 +152,7 @@ async function processData(data) {
         throw new Error("Ditemukan kesalahan validasi:\n" + validationErrors.join('\n'));
     }
 
-    showStatus('Memeriksa duplikasi data dengan server...', 'blue');
+    showStatus('Memeriksa duplikasi data dengan server...', 'info');
     const niksInFile = validatedData.map(row => row.nik);
     const { data: existingData, error } = await _supabase.from('alumni').select('nik').in('nik', niksInFile);
 
@@ -161,7 +168,7 @@ async function processData(data) {
     if (duplicatedData.length > 0) {
         const duplicateContainer = document.createElement('div');
         duplicateContainer.id = 'duplicate-preview';
-        statusContainer.appendChild(duplicateContainer);
+        previewContainer.appendChild(duplicateContainer);
         renderPreview('Data Duplikat (Akan Dilewati)', duplicateContainer, duplicatedData);
     }
 
@@ -169,12 +176,13 @@ async function processData(data) {
     if (duplicatedData.length > 0) {
         finalMessage += ` ${duplicatedData.length} data duplikat dilewati.`;
     }
-    showStatus(finalMessage, 'green');
+    showStatus(finalMessage, 'success');
 
     if (dataToInsert.length > 0) {
         saveDataBtn.disabled = false;
+        saveCard.style.display = 'block';
     } else {
-        showStatus('Tidak ada data baru untuk diimpor.', 'orange');
+        showStatus('Tidak ada data baru untuk diimpor.', 'warning');
         saveDataBtn.disabled = true;
     }
 }
@@ -226,11 +234,8 @@ function transformAndValidate(value, type, options) {
 
 // --- FUNGSI TAMPILAN & UI ---
 function renderPreview(title, container, data) {
-    container.innerHTML = '';
-    
     const titleElement = document.createElement('h3');
     titleElement.textContent = title;
-    titleElement.style.marginTop = '20px';
     container.appendChild(titleElement);
     
     if (data.length === 0) {
@@ -241,6 +246,9 @@ function renderPreview(title, container, data) {
     const tableContainer = document.createElement('div');
     tableContainer.style.maxHeight = '40vh';
     tableContainer.style.overflow = 'auto';
+    tableContainer.style.border = '1px solid #ddd';
+    tableContainer.style.borderRadius = '5px';
+
 
     const table = document.createElement('table');
     const thead = document.createElement('thead');
@@ -275,15 +283,15 @@ function renderPreview(title, container, data) {
     container.appendChild(tableContainer);
 }
 
-function showStatus(message, color) {
+function showStatus(message, type) {
     statusMessage.textContent = message;
-    statusMessage.style.color = color;
+    statusMessage.className = type; // Menetapkan kelas (success, error, info, warning)
     statusContainer.style.display = 'block';
 }
 
 function resetState() {
     saveDataBtn.disabled = true;
-    saveDataBtn.textContent = 'Simpan ke Database';
+    saveDataBtn.innerHTML = '<i class="fas fa-database"></i> Simpan ke Database';
     previewContainer.innerHTML = '';
     
     const duplicateContainer = document.getElementById('duplicate-preview');
@@ -294,6 +302,7 @@ function resetState() {
     dataToInsert = [];
     statusContainer.style.display = 'none';
     statusMessage.textContent = '';
+    saveCard.style.display = 'none';
 }
 
 // --- EVENT LISTENER TOMBOL SIMPAN ---
@@ -304,13 +313,13 @@ saveDataBtn.addEventListener('click', async () => {
     }
 
     saveDataBtn.disabled = true;
-    saveDataBtn.textContent = 'Menyimpan...';
+    saveDataBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
 
     const { error } = await _supabase.from('alumni').insert(dataToInsert);
 
     if (error) {
         alert('Gagal menyimpan data ke database: ' + error.message);
-        saveDataBtn.textContent = 'Simpan ke Database';
+        saveDataBtn.innerHTML = '<i class="fas fa-database"></i> Simpan ke Database';
         saveDataBtn.disabled = false;
     } else {
         alert(`${dataToInsert.length} baris data baru berhasil disimpan!`);

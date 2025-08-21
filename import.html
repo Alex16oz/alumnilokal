@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Import Data</title>
     <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
@@ -14,22 +15,33 @@
         <a href="index.html" class="menu-button" style="text-decoration: none;">Kembali</a>
     </nav>
 
-    <div class="menu-container">
-        <h2>Langkah 1: Pilih File</h2>
+    <div class="import-container">
+      <div class="import-step-card">
+        <h3><i class="fas fa-file-upload"></i> Langkah 1: Pilih File</h3>
         <p>Pilih file dengan format CSV, JSON, atau XLSX. Pastikan file Anda memiliki header yang sesuai dengan kolom tabel.</p>
-        <input type="file" id="file-input" accept=".csv, .json, .xlsx">
-    </div>
+        <label for="file-input" class="file-input-label">
+          <i class="fas fa-cloud-upload-alt"></i> Pilih File...
+        </label>
+        <input type="file" id="file-input" accept=".csv, .json, .xlsx" style="display: none;">
+        <span id="file-name-display" class="file-name">Tidak ada file yang dipilih.</span>
+      </div>
 
-    <div id="status-container" class="menu-container" style="display: none;">
-        <h2>Langkah 2: Validasi & Pratinjau Data</h2>
-        <p id="status-message"></p>
-        <div id="preview-container" style="max-height: 40vh; overflow: auto;">
+      <div id="status-container" class="import-step-card" style="display: none;">
+        <h3><i class="fas fa-tasks"></i> Langkah 2: Validasi & Pratinjau Data</h3>
+        <div id="status-message-wrapper">
+          <p id="status-message"></p>
+        </div>
+        <div id="preview-container">
             </div>
-    </div>
-    
-    <div class="menu-container">
-        <h2>Langkah 3: Simpan ke Database</h2>
-        <button id="save-data-btn" class="menu-button" disabled>Simpan ke Database</button>
+      </div>
+
+      <div id="save-card" class="import-step-card" style="display: none;">
+        <h3><i class="fas fa-save"></i> Langkah 3: Simpan ke Database</h3>
+        <p>Klik tombol di bawah ini untuk menyimpan data baru yang valid ke dalam database.</p>
+        <button id="save-data-btn" class="menu-button primary-action" disabled>
+          <i class="fas fa-database"></i> Simpan ke Database
+        </button>
+      </div>
     </div>
 
     <script src="import.js"></script>
