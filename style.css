@@ -106,41 +106,56 @@ body.no-scroll {
   display: flex;
 }
 
+/* Style Awal .menu-button */
 .menu-button {
   background-color: var(--neutral-card);
   color: var(--neutral-text-main);
   border: 1px solid var(--neutral-border);
-  padding: 8px 15px;
+  padding: 10px 18px;
   cursor: pointer;
   font-size: 0.9em;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  font-weight: 500;
   border-radius: 8px;
   margin: 0;
-}
-
-.menu-button:first-child {
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-}
-
-.menu-button:last-child {
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .menu-button:hover {
   background-color: var(--primary-light);
   border-color: var(--primary-main);
   color: var(--primary-main);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .menu-button:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--primary-light);
+  box-shadow: 0 0 0 3px var(--primary-light);
   border-color: var(--primary-main);
   z-index: 1;
   position: relative;
 }
+
+.menu-button.primary {
+    background-color: var(--primary-main);
+    color: white;
+    border-color: var(--primary-main);
+}
+
+.menu-button.primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: white;
+}
+
+.menu-button i {
+  font-size: 1.1em;
+}
+/* Akhir Style .menu-button */
 
 .icon-button {
   padding: 10px 12px;
@@ -680,6 +695,7 @@ tbody tr.selected td {
     text-align: center;
     margin: 0;
     border-radius: 8px !important;
+    justify-content: center; /* Menengahkan ikon dan teks */
   }
 
   #pagination-controls {
