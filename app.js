@@ -18,6 +18,7 @@ let currentFilters = [];
 let selectedAlumnusId = null;
 let selectedAlumniIds = new Set();
 let isSelectMode = false;
+let isEditMode = false; // <-- Variabel baru untuk mode edit
 
 // Variabel Paginasi
 let currentPage = 1;
@@ -372,7 +373,8 @@ function addFilterRow(filter = {}) {
 }
 
 function updateFilterInputs(column, operatorSelect, valueContainer, filter = {}) {
-    const columnType = columnTypes[column].type;
+    const columnTypeInfo = columnTypes[column] || { type: 'text' };
+    const columnType = columnTypeInfo.type;
     operatorSelect.innerHTML = '';
     valueContainer.innerHTML = '';
 
@@ -402,7 +404,7 @@ function updateFilterInputs(column, operatorSelect, valueContainer, filter = {})
         valueContainer.append(dateStart, ' - ', dateEnd);
     } else if (columnType === 'enum') {
         const selectInput = document.createElement('select');
-        columnTypes[column].options.forEach(opt => {
+        columnTypeInfo.options.forEach(opt => {
             const optionEl = document.createElement('option');
             optionEl.value = opt;
             optionEl.textContent = opt;
@@ -419,6 +421,7 @@ function updateFilterInputs(column, operatorSelect, valueContainer, filter = {})
     }
 }
 
+
 function applyFiltersAndSort() {
     let data = [...allAlumniData];
 
@@ -429,7 +432,7 @@ function applyFiltersAndSort() {
                 const filterValue = filter.value;
                 if (rowValue === null || rowValue === undefined) return false;
 
-                const colType = columnTypes[filter.column].type;
+                const colType = (columnTypes[filter.column] || {}).type;
                 if (colType === 'date') {
                     if (!filterValue[0] || !filterValue[1]) return true;
                     const rowDate = new Date(rowValue);
@@ -474,9 +477,18 @@ function applyFiltersAndSort() {
             const valB = b[column];
             if (valA === null || valA === undefined) return 1;
             if (valB === null || valB === undefined) return -1;
-            if (valA < valB) return direction === 'asc' ? -1 : 1;
-            if (valA > valB) return direction === 'asc' ? 1 : -1;
-            return 0;
+
+            const colType = (columnTypes[column] || {}).type;
+            let comparison = 0;
+            if (colType === 'date') {
+                comparison = new Date(valA) - new Date(valB);
+            } else if (colType === 'number') {
+                comparison = parseFloat(valA) - parseFloat(valB);
+            } else {
+                 if (valA < valB) comparison = -1;
+                 if (valA > valB) comparison = 1;
+            }
+            return direction === 'asc' ? comparison : -comparison;
         });
     }
     
@@ -485,6 +497,7 @@ function applyFiltersAndSort() {
     displayPage(1);
     deselectRow();
 }
+
 
 function updateActionButtonsState() {
     const hasSelection = selectedAlumniIds.size > 0;
@@ -508,6 +521,24 @@ function toggleSelectMode() {
     renderTableStructure();
     displayPage(currentPage);
 }
+
+// --- FUNGSI POPUP DATA (TAMBAH/EDIT) ---
+function openDataFormPopup(alumnusData = null) {
+    isEditMode = !!alumnusData;
+    const popup = document.getElementById('add-data-popup-container');
+    const title = popup.querySelector('.popup-header h2');
+    const submitBtn = popup.querySelector('#submit-add-data-btn');
+
+    title.textContent = isEditMode ? 'Edit Data Alumni' : 'Tambah Data Alumni (Manual)';
+    submitBtn.textContent = isEditMode ? 'Simpan Perubahan' : 'Simpan';
+    
+    populateAddDataForm(alumnusData);
+    
+    closeAllPopups();
+    popup.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+}
+
 
 // --- EVENT LISTENERS ---
 
@@ -598,11 +629,32 @@ document.getElementById('toggle-sort-btn').addEventListener('click', () => { clo
 document.getElementById('filter-btn').addEventListener('click', () => { closeAllPopups(); renderFilterPopup(); document.getElementById('filter-popup-container').style.display = 'flex'; document.body.classList.add('no-scroll'); });
 document.getElementById('add-data-btn').addEventListener('click', () => { closeAllPopups(); document.getElementById('add-method-choice-popup').style.display = 'flex'; document.body.classList.add('no-scroll'); });
 document.getElementById('download-data-btn').addEventListener('click', () => { closeAllPopups(); document.getElementById('download-popup-container').style.display = 'flex'; document.body.classList.add('no-scroll'); });
-document.getElementById('edit-data-btn').addEventListener('click', () => { alert(`Edit data: ${selectedAlumnusId}`); });
-document.getElementById('delete-data-btn').addEventListener('click', () => { alert(`Hapus data: ${selectedAlumnusId}`); });
+
+// --- [BARU] Event Listener untuk Edit dan Hapus ---
+document.getElementById('edit-data-btn').addEventListener('click', () => {
+    if (!selectedAlumnusId) return;
+    const alumnusToEdit = allAlumniData.find(a => a[primaryKeyColumn] === selectedAlumnusId);
+    if (alumnusToEdit) {
+        openDataFormPopup(alumnusToEdit);
+    }
+});
+
+document.getElementById('delete-data-btn').addEventListener('click', async () => {
+    if (!selectedAlumnusId) return;
+    if (confirm(`Anda yakin ingin menghapus data untuk ${selectedAlumnusId}?`)) {
+        const { error } = await _supabase.from('alumni').delete().eq(primaryKeyColumn, selectedAlumnusId);
+        if (error) {
+            alert('Gagal menghapus data: ' + error.message);
+        } else {
+            alert('Data berhasil dihapus.');
+            deselectRow();
+            fetchAlumniData();
+        }
+    }
+});
 
 document.querySelectorAll('.close-button').forEach(btn => btn.addEventListener('click', closeAllPopups));
-document.getElementById('manual-input-btn').addEventListener('click', () => { closeAllPopups(); populateAddDataForm(); document.getElementById('add-data-popup-container').style.display = 'flex'; document.body.classList.add('no-scroll'); });
+document.getElementById('manual-input-btn').addEventListener('click', () => openDataFormPopup());
 
 document.getElementById('apply-columns-btn').addEventListener('click', () => {
   currentTableHeaders = Array.from(document.querySelectorAll('#column-selection input:checked')).map(cb => cb.value);
@@ -636,7 +688,7 @@ document.getElementById('apply-filters-btn').addEventListener('click', () => {
         const valueContainer = row.querySelector('.filter-value-container');
         let value;
 
-        if (columnTypes[column].type === 'date') {
+        if ((columnTypes[column] || {}).type === 'date') {
             value = [
                 valueContainer.querySelectorAll('input')[0].value,
                 valueContainer.querySelectorAll('input')[1].value
@@ -666,9 +718,149 @@ document.getElementById('add-filter-btn').addEventListener('click', () => addFil
 document.getElementById('select-all-btn').addEventListener('click', () => { document.querySelectorAll('#column-selection input').forEach(cb => cb.checked = true); });
 document.getElementById('deselect-all-btn').addEventListener('click', () => { document.querySelectorAll('#column-selection input').forEach(cb => cb.checked = false); });
 
-// --- Fungsi Tambah Data & Unduh (Tidak Berubah) ---
-function populateAddDataForm(){const form=document.getElementById("add-data-form");form.innerHTML="";const formHeaders=allHeaders.filter(header=>header!=="id");formHeaders.forEach(header=>{const label=document.createElement("label");label.textContent=header.replace(/_/g," ").toUpperCase();form.appendChild(label);let input;if(header==="sudah_bekerja"){input=document.createElement("select");const options=["Belum Bekerja","Sudah Bekerja"];options.forEach(optText=>{const option=document.createElement("option");option.value=optText;option.textContent=optText;input.appendChild(option)})}else if(header==="pekerjaan_sesuai"){input=document.createElement("select");const defaultOption=document.createElement("option");defaultOption.value="";defaultOption.textContent="-- Pilih Kesesuaian --";defaultOption.selected=true;input.appendChild(defaultOption);const options=["Sesuai","Tidak Sesuai"];options.forEach(optText=>{const option=document.createElement("option");option.value=optText;option.textContent=optText;input.appendChild(option)})}else{input=document.createElement("input");input.type=columnTypes[header]?.type==="number"?"number":"text"}input.name=header;input.style.width="100%";input.style.padding="8px";input.style.marginBottom="10px";input.style.boxSizing="border-box";input.classList.add("form-input-element");form.appendChild(input)})}
-document.getElementById("submit-add-data-btn").addEventListener("click",async()=>{const form=document.getElementById("add-data-form");if(!form.checkValidity()){form.reportValidity();return}const formData=new FormData(form);const newAlumnus=Object.fromEntries(formData.entries());const primaryKeyValue=newAlumnus[primaryKeyColumn];if(!primaryKeyValue){alert(`Kolom primary key '${primaryKeyColumn}' wajib diisi!`);return}const{data:existingData,error:selectError}=await _supabase.from("alumni").select(primaryKeyColumn).eq(primaryKeyColumn,primaryKeyValue);if(selectError){console.error("Error checking for duplicates:",selectError);alert("Terjadi kesalahan saat memeriksa data: "+selectError.message);return}if(existingData&&existingData.length>0){alert(`Data dengan ${primaryKeyColumn} '${primaryKeyValue}' sudah ada.`);return}for(const key in newAlumnus){if(newAlumnus[key]==="")newAlumnus[key]=null}const{error:insertError}=await _supabase.from("alumni").insert([newAlumnus]);if(insertError){console.error("Error adding new alumni:",insertError);alert("Gagal menambahkan data: "+insertError.message)}else{alert("Data berhasil ditambahkan!");closeAllPopups();fetchAlumniData()}});
+
+// --- Fungsi Tambah & Edit Data ---
+function populateAddDataForm(alumnusData = null) {
+    const form = document.getElementById("add-data-form");
+    form.innerHTML = "";
+    const formHeaders = allHeaders.filter(header => header !== "id"); 
+    
+    formHeaders.forEach(header => {
+        const label = document.createElement("label");
+        label.textContent = header.replace(/_/g, " ").toUpperCase();
+        form.appendChild(label);
+        
+        let input;
+        const columnTypeInfo = columnTypes[header] || {};
+
+        if (header === "sudah_bekerja" || (columnTypeInfo.type === 'enum' && header !== "pekerjaan_sesuai")) {
+            input = document.createElement("select");
+            const options = columnTypeInfo.options || ["Belum Bekerja", "Sudah Bekerja"];
+            options.forEach(optText => {
+                const option = document.createElement("option");
+                option.value = optText;
+                option.textContent = optText;
+                input.appendChild(option);
+            });
+        } else if (header === "pekerjaan_sesuai") {
+            input = document.createElement("select");
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = "-- Pilih Kesesuaian --";
+            input.appendChild(defaultOption);
+            const options = columnTypeInfo.options || ["Sesuai", "Tidak Sesuai"];
+            options.forEach(optText => {
+                const option = document.createElement("option");
+                option.value = optText;
+                option.textContent = optText;
+                input.appendChild(option);
+            });
+        } else {
+            input = document.createElement("input");
+            if (columnTypeInfo.type === 'number') {
+                input.type = "number";
+            } else if (columnTypeInfo.type === 'date') {
+                input.type = "date";
+            } else {
+                input.type = "text";
+            }
+        }
+        
+        input.name = header;
+        input.style.width = "100%";
+        input.style.padding = "8px";
+        input.style.marginBottom = "10px";
+        input.style.boxSizing = "border-box";
+        input.classList.add("form-input-element");
+
+        if (alumnusData) {
+            let value = alumnusData[header];
+            if (columnTypeInfo.type === 'date' && value) {
+                // Format YYYY-MM-DD untuk input date
+                value = new Date(value).toISOString().split('T')[0];
+            }
+            input.value = value || '';
+        }
+
+        if (isEditMode && header === primaryKeyColumn) {
+            input.disabled = true;
+        }
+
+        form.appendChild(input);
+    });
+}
+
+
+document.getElementById("submit-add-data-btn").addEventListener("click", async () => {
+    const form = document.getElementById("add-data-form");
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    const formData = new FormData(form);
+    const newAlumnusData = Object.fromEntries(formData.entries());
+
+    // Tambahkan kembali nilai primary key yang dinonaktifkan
+    if(isEditMode) {
+        newAlumnusData[primaryKeyColumn] = selectedAlumnusId;
+    }
+
+    // Ubah string kosong menjadi null
+    for (const key in newAlumnusData) {
+        if (newAlumnusData[key] === "") {
+            newAlumnusData[key] = null;
+        }
+    }
+    
+    if (isEditMode) {
+        // --- LOGIKA UPDATE ---
+        const { error } = await _supabase
+            .from('alumni')
+            .update(newAlumnusData)
+            .eq(primaryKeyColumn, selectedAlumnusId);
+
+        if (error) {
+            console.error("Error updating alumni:", error);
+            alert("Gagal memperbarui data: " + error.message);
+        } else {
+            alert("Data berhasil diperbarui!");
+            closeAllPopups();
+            fetchAlumniData();
+        }
+
+    } else {
+        // --- LOGIKA INSERT (YANG SUDAH ADA) ---
+        const primaryKeyValue = newAlumnusData[primaryKeyColumn];
+        if (!primaryKeyValue) {
+            alert(`Kolom primary key '${primaryKeyColumn}' wajib diisi!`);
+            return;
+        }
+        const { data: existingData, error: selectError } = await _supabase.from("alumni").select(primaryKeyColumn).eq(primaryKeyColumn, primaryKeyValue);
+        if (selectError) {
+            console.error("Error checking for duplicates:", selectError);
+            alert("Terjadi kesalahan saat memeriksa data: " + selectError.message);
+            return;
+        }
+        if (existingData && existingData.length > 0) {
+            alert(`Data dengan ${primaryKeyColumn} '${primaryKeyValue}' sudah ada.`);
+            return;
+        }
+        
+        const { error: insertError } = await _supabase.from("alumni").insert([newAlumnusData]);
+        if (insertError) {
+            console.error("Error adding new alumni:", insertError);
+            alert("Gagal menambahkan data: " + insertError.message);
+        } else {
+            alert("Data berhasil ditambahkan!");
+            closeAllPopups();
+            fetchAlumniData();
+        }
+    }
+    isEditMode = false; // Reset mode
+});
+
+
+// --- Fungsi Unduh ---
 function getVisibleData(){return filteredAlumniData.slice((currentPage-1)*rowsPerPage,(currentPage-1)*rowsPerPage+rowsPerPage).map(row=>{const visibleRow={};currentTableHeaders.forEach(header=>{visibleRow[header]=row[header]});return visibleRow})}
 document.getElementById("download-csv-btn").addEventListener("click",()=>{const data=getVisibleData();if(data.length===0)return alert("Tidak ada data untuk diunduh.");const headers=currentTableHeaders.join(",");const rows=data.map(row=>currentTableHeaders.map(header=>JSON.stringify(row[header],(key,value)=>value===null?"":value)).join(","));const csvContent="data:text/csv;charset=utf-8,"+headers+"\n"+rows.join("\n");const link=document.createElement("a");link.setAttribute("href",encodeURI(csvContent));link.setAttribute("download","alumni_data.csv");document.body.appendChild(link);link.click();document.body.removeChild(link);closeAllPopups()});
 document.getElementById("download-json-btn").addEventListener("click",()=>{const data=getVisibleData();if(data.length===0)return alert("Tidak ada data untuk diunduh.");const jsonContent="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(data,null,2));const link=document.createElement("a");link.setAttribute("href",jsonContent);link.setAttribute("download","alumni_data.json");document.body.appendChild(link);link.click();document.body.removeChild(link);closeAllPopups()});
