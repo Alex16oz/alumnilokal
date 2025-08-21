@@ -33,7 +33,7 @@ body.no-scroll {
 
 .navbar {
   background-color: var(--primary-main);
-  padding: 15px 30px;
+  padding: 15px 20px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   display: flex;
   justify-content: space-between;
@@ -43,7 +43,7 @@ body.no-scroll {
 .navbar h1 {
   color: white;
   margin: 0;
-  font-size: 1.5em;
+  font-size: 1.3em;
 }
 
 .dropdown {
@@ -88,15 +88,18 @@ body.no-scroll {
 
 .menu-controls-wrapper {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+  gap: 10px;
 }
 
 .menu-container {
-  padding: 10px 20px;
+  padding: 10px;
   text-align: left;
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 #selection-actions-container {
@@ -107,11 +110,12 @@ body.no-scroll {
   background-color: var(--neutral-card);
   color: var(--neutral-text-main);
   border: 1px solid var(--neutral-border);
-  padding: 10px 20px;
+  padding: 8px 15px;
   cursor: pointer;
-  font-size: 1em;
+  font-size: 0.9em;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-  margin-right: -1px;
+  border-radius: 8px;
+  margin: 0;
 }
 
 .menu-button:first-child {
@@ -162,11 +166,11 @@ body.no-scroll {
 }
 
 #alumni-container {
-  margin: 0 20px 20px 20px;
+  margin: 0 10px 10px 10px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   overflow: auto;
-  max-height: 75vh;
+  max-height: 70vh;
   border: 1px solid var(--neutral-border);
 }
 
@@ -178,9 +182,10 @@ table {
 
 th, td {
   border: 1px solid var(--neutral-border);
-  padding: 12px 15px;
+  padding: 10px 12px;
   text-align: left;
   word-wrap: break-word;
+  font-size: 0.9em;
 }
 
 thead {
@@ -235,17 +240,19 @@ tbody tr.selected td {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  display: none; /* Default to hidden */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .popup-content {
   background-color: var(--neutral-card);
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  width: 90%;
+  width: 100%;
   max-width: 500px;
   display: flex;
   flex-direction: column;
@@ -275,13 +282,13 @@ tbody tr.selected td {
 
 .popup-body {
   padding: 20px;
-  max-height: 300px;
+  max-height: 70vh;
   overflow-y: auto;
 }
 
 #column-selection {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 10px;
 }
 
@@ -361,6 +368,9 @@ tbody tr.selected td {
 #pagination-controls {
   text-align: center;
   margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #pagination-controls button {
@@ -406,7 +416,7 @@ tbody tr.selected td {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748B%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-13%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013l128%20127.9c3.6%203.6%207.8%205.4%2013%205.4s9.4-1.8%2013-5.4L287%2095.2c3.6-3.6%205.4-7.8%205.4-13%200-5-1.8-9.4-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%2... (rest of svg string)');
   background-repeat: no-repeat;
   background-position: right 10px top 50%;
   background-size: 12px auto;
@@ -432,7 +442,8 @@ tbody tr.selected td {
 
 .filter-row {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: 10px;
   margin-bottom: 15px;
 }
@@ -443,12 +454,13 @@ tbody tr.selected td {
   border-radius: 4px;
   font-size: 0.9em;
   box-sizing: border-box;
+  width: 100%;
 }
 
-.filter-column { flex: 3; }
-.filter-operator { flex: 3; }
+.filter-column { flex: 1; }
+.filter-operator { flex: 1; }
 .filter-value-container {
-  flex: 4;
+  flex: 1;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -461,16 +473,17 @@ tbody tr.selected td {
   background-color: var(--danger-main);
   color: white;
   border: none;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  border-radius: 5px;
+  width: 100%;
+  height: 36px;
   cursor: pointer;
-  font-size: 1.4em;
-  line-height: 28px;
+  font-size: 1em;
+  line-height: 36px;
   text-align: center;
   padding: 0;
   flex-shrink: 0;
   transition: background-color 0.2s;
+  margin-top: 5px;
 }
 
 .remove-filter-btn:hover {
@@ -480,17 +493,17 @@ tbody tr.selected td {
 /* Import Page Styles */
 .import-container {
   max-width: 900px;
-  margin: 30px auto;
-  padding: 0 20px;
+  margin: 20px auto;
+  padding: 0 15px;
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 20px;
 }
 
 .import-step-card {
   background-color: var(--neutral-card);
   border-radius: 8px;
-  padding: 25px;
+  padding: 20px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.05);
   border: 1px solid var(--neutral-border);
 }
@@ -498,7 +511,7 @@ tbody tr.selected td {
 .import-step-card h3 {
   margin-top: 0;
   color: var(--primary-main);
-  font-size: 1.4em;
+  font-size: 1.3em;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -507,17 +520,21 @@ tbody tr.selected td {
 .import-step-card p {
   color: var(--neutral-text-light);
   line-height: 1.6;
+  font-size: 0.9em;
 }
 
 .file-input-label {
   display: inline-block;
-  padding: 12px 25px;
+  padding: 12px 20px;
   background-color: var(--primary-main);
   color: white;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1em;
   transition: background-color 0.3s;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .file-input-label:hover {
@@ -529,9 +546,12 @@ tbody tr.selected td {
 }
 
 .file-name {
-  margin-left: 15px;
+  display: block;
+  margin-top: 10px;
+  margin-left: 0;
   color: var(--neutral-text-light);
   font-style: italic;
+  text-align: center;
 }
 
 #status-message-wrapper {
@@ -597,4 +617,114 @@ tbody tr.selected td {
   cursor: not-allowed !important;
   border-color: #a0a0a0 !important;
   color: white !important;
+}
+
+/* ================================== */
+/* === RESPONSIVE MEDIA QUERIES === */
+/* ================================== */
+
+/* Untuk Tablet dan Perangkat yang lebih kecil (<= 768px) */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px;
+  }
+  
+  .navbar h1 {
+    font-size: 1.2em;
+  }
+
+  .menu-controls-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .menu-container {
+    justify-content: center;
+    width: 100%;
+    padding: 10px 0;
+    box-sizing: border-box;
+  }
+  
+  #alumni-container {
+    margin: 0 10px 10px 10px;
+    max-height: 65vh;
+  }
+  
+  .popup-content {
+    width: 95%;
+  }
+
+  .filter-row {
+    flex-direction: column;
+  }
+  
+  .remove-filter-btn {
+      width: auto;
+  }
+}
+
+/* Untuk Ponsel (<= 480px) */
+@media (max-width: 480px) {
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .menu-container, #selection-actions-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .menu-button {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    border-radius: 8px !important; /* Hapus radius spesifik */
+  }
+
+  #pagination-controls {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  #page-info {
+    width: 100%;
+    text-align: center;
+  }
+
+  .popup-body {
+    padding: 15px;
+  }
+  
+  .popup-footer {
+    flex-direction: column;
+  }
+
+  .popup-footer button {
+    width: 100%;
+  }
+
+  #add-method-choice-popup .popup-body {
+    flex-direction: column;
+  }
+
+  #analysis-buttons {
+    flex-direction: column;
+  }
+  
+  .import-container {
+    margin: 10px auto;
+    padding: 0 10px;
+  }
+
+  .import-step-card {
+    padding: 15px;
+  }
+
+  th, td {
+    padding: 8px;
+    font-size: 0.8em;
+  }
 }
