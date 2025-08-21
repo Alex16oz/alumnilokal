@@ -15,24 +15,20 @@ const filterControls = document.getElementById('filter-controls');
 let myChartInstance = null;
 let allAlumniData = [];
 
-// --- PALET WARNA BARU YANG LEBIH CERDAS ---
+// --- PALET WARNA ---
 const colorPalette = {
     // Warna Kontekstual (untuk nilai spesifik)
-    'Sudah Bekerja': 'rgba(22, 163, 74, 0.8)',      // --success-main
-    'Belum Bekerja': 'rgba(220, 38, 38, 0.8)',      // --danger-main
-    'Sesuai': 'rgba(37, 99, 235, 0.8)',             // --primary-main
-    'Tidak Sesuai': 'rgba(217, 119, 6, 0.8)',       // --warning-main
-    
-    // Warna Umum (untuk kategori dinamis seperti nama program/tahun)
+    'Sudah Bekerja': 'rgba(22, 163, 74, 0.8)',
+    'Belum Bekerja': 'rgba(220, 38, 38, 0.8)',
+    'Sesuai': 'rgba(37, 99, 235, 0.8)',
+    'Tidak Sesuai': 'rgba(217, 119, 6, 0.8)',
+
+    // Warna Umum (untuk kategori dinamis)
     general: [
-        'rgba(37, 99, 235, 0.8)',   // --primary-main
-        'rgba(234, 88, 12, 0.8)',   // A nice orange accent
-        'rgba(2, 132, 199, 0.8)',   // --info-main (cyan)
-        'rgba(100, 116, 139, 0.8)', // --neutral-text-light
-        'rgba(153, 102, 255, 0.8)', // Original purple
-        'rgba(255, 159, 64, 0.8)',  // Original orange
-        'rgba(75, 192, 192, 0.8)',  // Original teal
-        'rgba(255, 99, 132, 0.8)'   // Original pink
+        'rgba(37, 99, 235, 0.8)', 'rgba(234, 88, 12, 0.8)',
+        'rgba(2, 132, 199, 0.8)', 'rgba(100, 116, 139, 0.8)',
+        'rgba(153, 102, 255, 0.8)', 'rgba(255, 159, 64, 0.8)',
+        'rgba(75, 192, 192, 0.8)', 'rgba(255, 99, 132, 0.8)'
     ]
 };
 
@@ -40,12 +36,10 @@ const colorPalette = {
 function getChartColors(labels) {
     const backgroundColors = [];
     let generalColorIndex = 0;
-    
     labels.forEach(label => {
         if (colorPalette[label]) {
             backgroundColors.push(colorPalette[label]);
         } else {
-            // Gunakan warna umum jika tidak ada warna spesifik
             backgroundColors.push(colorPalette.general[generalColorIndex % colorPalette.general.length]);
             generalColorIndex++;
         }
@@ -53,22 +47,28 @@ function getChartColors(labels) {
     return backgroundColors;
 }
 
-
 // 3. Fungsi Utama
 async function initializePage() {
-    const { data, error } = await _supabase.from('alumni').select('*');
-    if (error) {
+    try {
+        const { data, error } = await _supabase.from('alumni').select('*');
+        if (error) throw error;
+        allAlumniData = data.filter(d => d.tanggal_mulai_program);
+        setupEventListeners();
+        // Secara default, tampilkan analisis pertama saat halaman dimuat
+        runAnalysis('peserta_per_tahun');
+        analysisButtons.querySelector('[data-analysis="peserta_per_tahun"]').classList.add('primary');
+    } catch (error) {
         console.error('Gagal mengambil data:', error);
-        return;
+        chartContainer.innerHTML = `<p style="color: red;">Gagal memuat data. Silakan coba lagi nanti.</p>`;
+        chartContainer.style.display = 'block';
     }
-    allAlumniData = data.filter(d => d.tanggal_mulai_program);
-
-    setupEventListeners();
 }
 
 function setupEventListeners() {
     analysisButtons.addEventListener('click', (event) => {
         if (event.target.tagName === 'BUTTON') {
+            analysisButtons.querySelectorAll('button').forEach(btn => btn.classList.remove('primary'));
+            event.target.classList.add('primary');
             const analysisType = event.target.dataset.analysis;
             runAnalysis(analysisType);
         }
@@ -78,7 +78,8 @@ function setupEventListeners() {
 // 4. Router Analisis
 function runAnalysis(analysisType) {
     if (myChartInstance) myChartInstance.destroy();
-    
+
+    // Selalu perbarui filter berdasarkan analisis yang dipilih
     populateFilters(analysisType);
     const filteredData = applyFilters();
 
@@ -97,7 +98,6 @@ function runAnalysis(analysisType) {
             break;
     }
 }
-
 
 // --- FUNGSI-FUNGSI GRAFIK SPESIFIK ---
 
@@ -118,8 +118,9 @@ function generatePesertaPerTahunChart(data) {
         datasets: [{
             label: 'Jumlah Peserta',
             data: chartData,
-            fill: false,
-            borderColor: 'rgba(37, 99, 235, 1)', // --primary-main
+            fill: true,
+            backgroundColor: 'rgba(37, 99, 235, 0.2)',
+            borderColor: 'rgba(37, 99, 235, 1)',
             tension: 0.1
         }],
         title: 'Tren Jumlah Peserta Pelatihan per Tahun'
@@ -132,7 +133,7 @@ function generateDistribusiProgramChart(data) {
         acc[key] = (acc[key] || 0) + 1;
         return acc;
     }, {});
-    
+
     const labels = Object.keys(counts);
     renderChart({
         type: 'pie',
@@ -140,7 +141,7 @@ function generateDistribusiProgramChart(data) {
         datasets: [{
             label: 'Jumlah Peserta',
             data: Object.values(counts),
-            backgroundColor: getChartColors(labels) // Menggunakan fungsi warna baru
+            backgroundColor: getChartColors(labels)
         }],
         title: 'Distribusi Peserta Berdasarkan Program Pelatihan'
     });
@@ -150,23 +151,25 @@ function generateStackedBarChart(data, categoryColumn, stackColumn, title) {
     const categories = [...new Set(data.map(row => row[categoryColumn]))];
     const stackValues = [...new Set(data.map(row => row[stackColumn]))].filter(Boolean);
 
-    const datasets = stackValues.map(stackVal => {
-        return {
-            label: stackVal,
-            data: categories.map(cat => {
-                return data.filter(row => row[categoryColumn] === cat && row[stackColumn] === stackVal).length;
-            }),
-            backgroundColor: colorPalette[stackVal] || getChartColors([stackVal])[0] // Warna dari palet
-        };
-    });
+    const datasets = stackValues.map(stackVal => ({
+        label: stackVal,
+        data: categories.map(cat =>
+            data.filter(row => row[categoryColumn] === cat && row[stackColumn] === stackVal).length
+        ),
+        backgroundColor: colorPalette[stackVal] || getChartColors([stackVal])[0]
+    }));
 
     renderChart({ type: 'bar', labels: categories, datasets, title, isStacked: true });
 }
 
-
 // --- FUNGSI UTILITAS (FILTER & RENDER) ---
 
 function populateFilters(analysisType) {
+    const currentFilterValues = {};
+    document.querySelectorAll('#filter-controls select').forEach(select => {
+        currentFilterValues[select.dataset.column] = select.value;
+    });
+
     filterControls.innerHTML = '';
     let filterableColumns = [];
 
@@ -180,14 +183,11 @@ function populateFilters(analysisType) {
     filterableColumns.forEach(filterInfo => {
         const isYearFilter = typeof filterInfo === 'object';
         const columnName = isYearFilter ? filterInfo.column : filterInfo;
-        const displayName = isYearFilter ? filterInfo.name : `Filter by ${columnName.replace(/_/g, ' ')}`;
-        
-        let uniqueValues;
-        if (isYearFilter) {
-            uniqueValues = [...new Set(allAlumniData.map(row => new Date(row[columnName]).getFullYear()))].sort();
-        } else {
-            uniqueValues = [...new Set(allAlumniData.map(row => row[columnName]).filter(Boolean))];
-        }
+        const displayName = isYearFilter ? filterInfo.name : `Filter ${columnName.replace(/_/g, ' ')}`;
+
+        let uniqueValues = isYearFilter
+            ? [...new Set(allAlumniData.map(row => new Date(row[columnName]).getFullYear()))].sort((a, b) => b - a)
+            : [...new Set(allAlumniData.map(row => row[columnName]).filter(Boolean))];
 
         if (uniqueValues.length > 1) {
             const select = document.createElement('select');
@@ -195,8 +195,21 @@ function populateFilters(analysisType) {
             select.className = 'menu-button';
             select.dataset.column = columnName;
             select.innerHTML = `<option value="all">Semua ${displayName}</option>`;
-            uniqueValues.forEach(value => { select.innerHTML += `<option value="${value}">${value}</option>`; });
-            select.addEventListener('change', () => runAnalysis(analysisType));
+            uniqueValues.forEach(value => {
+                select.innerHTML += `<option value="${value}">${value}</option>`;
+            });
+
+            // **PERBAIKAN KUNCI DI SINI**
+            // Event listener sekarang akan selalu menjalankan analisis yang sedang aktif.
+            select.addEventListener('change', () => {
+                const activeAnalysis = document.querySelector('#analysis-buttons button.primary').dataset.analysis;
+                runAnalysis(activeAnalysis);
+            });
+
+            if (currentFilterValues[columnName]) {
+                select.value = currentFilterValues[columnName];
+            }
+
             filterControls.appendChild(select);
         }
     });
@@ -210,7 +223,7 @@ function applyFilters() {
         const value = select.value;
         if (value !== 'all') {
             if (column.includes('tanggal')) {
-                 filteredData = filteredData.filter(row => String(new Date(row[column]).getFullYear()) === value);
+                filteredData = filteredData.filter(row => String(new Date(row[column]).getFullYear()) === value);
             } else {
                 filteredData = filteredData.filter(row => String(row[column]) === value);
             }
@@ -220,27 +233,22 @@ function applyFilters() {
 }
 
 function renderChart({ type, labels, datasets, title, isStacked = false }) {
-    if (labels.length === 0) {
-        chartContainer.innerHTML = '<p>Tidak ada data untuk ditampilkan dengan filter yang dipilih.</p>';
-        chartContainer.style.display = 'block';
-        return;
-    } else if (document.getElementById('myChart') === null) {
+    if (document.getElementById('myChart') === null) {
         chartContainer.innerHTML = '<canvas id="myChart"></canvas>';
     }
+    const ctx = document.getElementById('myChart').getContext('2d');
 
-    if (type !== 'pie') {
-        datasets.forEach((ds, index) => {
-            if (!ds.backgroundColor) {
-                ds.backgroundColor = colorPalette.general[index % colorPalette.general.length];
-            }
-            if (!ds.borderColor) {
-                ds.borderColor = ds.backgroundColor.replace('0.8', '1'); // Make border solid color
-            }
-        });
+    if (labels.length === 0) {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#64748B";
+        ctx.textAlign = "center";
+        ctx.fillText("Tidak ada data untuk ditampilkan dengan filter yang dipilih.", ctx.canvas.width / 2, 50);
+        chartContainer.style.display = 'block';
+        return;
     }
 
     chartContainer.style.display = 'block';
-    const ctx = document.getElementById('myChart').getContext('2d');
     myChartInstance = new Chart(ctx, {
         type,
         data: { labels, datasets },
@@ -250,17 +258,15 @@ function renderChart({ type, labels, datasets, title, isStacked = false }) {
             plugins: {
                 legend: { position: 'top' },
                 title: { display: true, text: title, font: { size: 18 } },
-                 tooltip: {
+                tooltip: {
                     callbacks: {
                         label: function(context) {
                             let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed.y !== null) {
-                                label += context.parsed.y;
-                            }
-                            if ((context.chart.config.type === 'pie' || context.chart.config.type === 'doughnut') && context.parsed !== null) {
+                            if (label) label += ': ';
+                            let value = context.parsed.y ?? context.parsed;
+                            label += new Intl.NumberFormat('id-ID').format(value);
+
+                            if (['pie', 'doughnut'].includes(context.chart.config.type) && context.parsed !== null) {
                                 const total = context.chart.getDatasetMeta(0).total;
                                 const percentage = ((context.parsed / total) * 100).toFixed(2) + '%';
                                 label += ` (${percentage})`;
@@ -271,8 +277,26 @@ function renderChart({ type, labels, datasets, title, isStacked = false }) {
                 }
             },
             scales: (type === 'bar' || type === 'line') ? {
-                x: { stacked: isStacked },
-                y: { stacked: isStacked, beginAtZero: true }
+                x: {
+                    stacked: isStacked,
+                    ticks: {
+                        callback: function(value) {
+                            const label = this.getLabelForValue(value);
+                            return (label.length > 15) ? label.substring(0, 15) + '...' : label;
+                        }
+                    }
+                },
+                y: {
+                    stacked: isStacked,
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            if (Number.isInteger(value)) {
+                                return new Intl.NumberFormat('id-ID').format(value);
+                            }
+                        }
+                    }
+                }
             } : {}
         }
     });
