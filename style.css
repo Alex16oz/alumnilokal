@@ -1,8 +1,30 @@
+:root {
+  --primary-main: #2563EB;
+  --primary-light: #EFF6FF;
+  --primary-dark: #1D4ED8;
+
+  --neutral-bg: #F8FAFC;
+  --neutral-card: #FFFFFF;
+  --neutral-border: #E2E8F0;
+  --neutral-text-main: #1E293B;
+  --neutral-text-light: #64748B;
+
+  --success-main: #16A34A;
+  --success-light: #F0FDF4;
+  --danger-main: #DC2626;
+  --danger-light: #FEF2F2;
+  --warning-main: #D97706;
+  --warning-light: #FFFBEB;
+  
+  --info-main: #0284C7;
+  --info-light: #F0F9FF;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
-  background-color: #f4f7f6;
-  color: #333;
+  background-color: var(--neutral-bg);
+  color: var(--neutral-text-main);
 }
 
 body.no-scroll {
@@ -10,7 +32,7 @@ body.no-scroll {
 }
 
 .navbar {
-  background-color: #007bff;
+  background-color: var(--primary-main);
   padding: 15px 30px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   display: flex;
@@ -41,22 +63,28 @@ body.no-scroll {
   display: none;
   position: absolute;
   right: 0;
-  background-color: #f1f1f1;
+  background-color: var(--neutral-card);
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 11;
+  border: 1px solid var(--neutral-border);
+  border-radius: 8px;
 }
 
 .dropdown-content a {
-  color: black;
+  color: var(--neutral-text-main);
   padding: 12px 16px;
   text-decoration: none;
   display: block;
 }
 
-.dropdown-content a:hover {background-color: #ddd;}
+.dropdown-content a:hover {
+  background-color: var(--primary-light);
+}
 
-.show {display: block;}
+.show {
+  display: block;
+}
 
 .menu-controls-wrapper {
   display: flex;
@@ -68,7 +96,7 @@ body.no-scroll {
 .menu-container {
   padding: 10px 20px;
   text-align: left;
-  display: flex; /* Menggunakan flexbox untuk menyatukan tombol */
+  display: flex;
 }
 
 #selection-actions-container {
@@ -76,67 +104,70 @@ body.no-scroll {
 }
 
 .menu-button {
-  background-color: #cbe5ff; /* Warna latar belakang minimalis */
-  color: #343a40; /* Warna teks yang kontras */
-  border: 1px solid #dee2e6; /* Border tipis */
+  background-color: var(--neutral-card);
+  color: var(--neutral-text-main);
+  border: 1px solid var(--neutral-border);
   padding: 10px 20px;
   cursor: pointer;
   font-size: 1em;
-  transition: background-color 0.2s, color 0.2s;
-  margin-right: -1px; /* Menghilangkan spasi antar tombol */
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  margin-right: -1px;
 }
 
 .menu-button:first-child {
-  border-top-left-radius: 8px; /* Sudut bulat di kiri atas */
-  border-bottom-left-radius: 8px; /* Sudut bulat di kiri bawah */
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 .menu-button:last-child {
-  border-top-right-radius: 8px; /* Sudut bulat di kanan atas */
-  border-bottom-right-radius: 8px; /* Sudut bulat di kanan bawah */
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 .menu-button:hover {
-  background-color: #d3d6d9; /* Warna saat kursor di atas tombol */
-  color: #0056b3;
+  background-color: var(--primary-light);
+  border-color: var(--primary-main);
+  color: var(--primary-main);
 }
 
 .menu-button:focus {
-  outline: none; /* Menghilangkan outline default */
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* Menambah fokus modern */
-  z-index: 1; /* Memastikan shadow terlihat di atas tombol lain */
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-light);
+  border-color: var(--primary-main);
+  z-index: 1;
   position: relative;
 }
 
-/* Style untuk Tombol Ikon */
 .icon-button {
-    padding: 10px 12px;
-    font-size: 1em;
+  padding: 10px 12px;
+  font-size: 1em;
 }
 
 .icon-button.edit-icon {
-    background-color: #ece800; /* Warna hijau untuk edit */
+  background-color: var(--warning-main);
+  color: white;
+  border-color: var(--warning-main);
 }
 .icon-button.edit-icon:hover {
-    background-color: #d3d003;
+  background-color: #B45309;
 }
 
 .icon-button.delete-icon, #selection-actions-container .delete-icon {
-    background-color: #dc3545; /* Warna merah untuk hapus */
-    color: white;
+  background-color: var(--danger-main);
+  color: white;
+  border-color: var(--danger-main);
 }
 .icon-button.delete-icon:hover, #selection-actions-container .delete-icon:hover {
-    background-color: #c82333;
+  background-color: #B91C1C;
 }
-
 
 #alumni-container {
   margin: 0 20px 20px 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   overflow: auto;
   max-height: 75vh;
-  border: 1px solid #ddd;
+  border: 1px solid var(--neutral-border);
 }
 
 table {
@@ -146,7 +177,7 @@ table {
 }
 
 th, td {
-  border: 1px solid #ddd;
+  border: 1px solid var(--neutral-border);
   padding: 12px 15px;
   text-align: left;
   word-wrap: break-word;
@@ -159,7 +190,7 @@ thead {
 }
 
 th {
-  background-color: #007bff;
+  background-color: var(--primary-main);
   color: white;
   font-weight: bold;
   position: relative;
@@ -167,8 +198,8 @@ th {
 }
 
 th .sort-icon {
-    margin-left: 5px;
-    font-size: 0.8em;
+  margin-left: 5px;
+  font-size: 0.8em;
 }
 
 .resizer {
@@ -181,22 +212,20 @@ th .sort-icon {
 }
 
 tbody tr:nth-child(odd) td {
-  background-color: #ffffff;
+  background-color: var(--neutral-card);
 }
 
 tbody tr:nth-child(even) td {
-  background-color: #f2f2f2;
+  background-color: var(--neutral-bg);
 }
-
 
 tbody tr:hover td {
-  background-color: #e9ecef;
+  background-color: var(--primary-light);
 }
 
-/* Warna Highlight Baru */
 tbody tr.selected td {
-    background-color: #d1e7fd !important; /* Warna biru muda */
-    color: #0c63e4; /* Warna teks biru tua */
+  background-color: var(--primary-light) !important;
+  color: var(--primary-dark);
 }
 
 .popup-overlay {
@@ -206,14 +235,14 @@ tbody tr.selected td {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
+  display: none; /* Default to hidden */
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
 .popup-content {
-  background-color: white;
+  background-color: var(--neutral-card);
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   width: 90%;
@@ -227,12 +256,13 @@ tbody tr.selected td {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--neutral-border);
 }
 
 .popup-header h2 {
   margin: 0;
   font-size: 1.2em;
+  color: var(--neutral-text-main);
 }
 
 .close-button {
@@ -240,7 +270,7 @@ tbody tr.selected td {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #888;
+  color: var(--neutral-text-light);
 }
 
 .popup-body {
@@ -255,12 +285,12 @@ tbody tr.selected td {
   gap: 10px;
 }
 
-/* From Uiverse.io by SelfMadeSystem */
 #column-selection .container {
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-size: 0.8em;
+  font-size: 0.9em;
+  color: var(--neutral-text-main);
 }
 
 #column-selection .container input {
@@ -269,87 +299,72 @@ tbody tr.selected td {
 
 #column-selection .container svg {
   overflow: visible;
-  height: 1.5em; /* DIUBAH */
-  width: 1.5em;  /* DIUBAH */
+  height: 1.5em;
+  width: 1.5em;
   margin-right: 8px;
 }
 
 #column-selection .path {
   fill: none;
-  stroke: #333; /* Warna garis saat tidak dicentang */
+  stroke: var(--neutral-text-light);
   stroke-width: 6;
   stroke-linecap: round;
   stroke-linejoin: round;
   transition: stroke-dasharray 0.5s ease;
   stroke-dasharray: 0 0 240 9999999;
   stroke-dashoffset: 1;
-  scale: -1 1;
-  transform-origin: center;
-  animation: hi 0.5s;
+  transform: scale(-1, 1) translate(-64px, 0);
 }
 
 #column-selection .container input:checked ~ svg .path {
-  stroke: #007bff; /* Warna garis saat dicentang */
+  stroke: var(--primary-main);
   stroke-dasharray: 0 262 70 9999999;
   transition-delay: 0s;
-  scale: 1 1;
-  animation: none;
-}
-
-@keyframes hi {
-  0% {
-    stroke-dashoffset: 20;
-  }
-  to {
-    stroke-dashoffset: 1;
-  }
-}
-
-/* Menghapus gaya checkbox lama */
-#column-selection .checkmark,
-#column-selection .checkmark:after {
-  display: none;
+  transform: scale(1, 1) translate(0, 0);
 }
 
 .popup-footer {
   padding: 15px 20px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--neutral-border);
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   justify-content: flex-end;
+  background-color: var(--neutral-bg);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 .popup-footer button {
   padding: 8px 15px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--neutral-border);
   border-radius: 5px;
   cursor: pointer;
-  background-color: #f0f0f0;
+  background-color: var(--neutral-card);
+  color: var(--neutral-text-main);
+}
+
+.popup-footer button:hover {
+  background-color: #f1f5f9; /* Lighter gray */
 }
 
 .popup-footer button.primary {
-  background-color: #28a745;
+  background-color: var(--success-main);
   color: white;
-  border-color: #28a745;
+  border-color: var(--success-main);
 }
 
 .popup-footer button.primary:hover {
-  background-color: #218838;
-}
-
-#pagination-container {
-    text-align: center;
-    margin-top: 20px;
+  background-color: #15803D;
 }
 
 #pagination-controls {
   text-align: center;
-  margin: 10px 0;
+  margin: 20px 0;
 }
 
 #pagination-controls button {
-  background-color: #007bff;
+  background-color: var(--primary-main);
   color: white;
   border: none;
   padding: 5px 10px;
@@ -361,54 +376,54 @@ tbody tr.selected td {
 }
 
 #pagination-controls button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-dark);
 }
 
 #pagination-controls button:disabled {
-  background-color: #ccc;
+  background-color: #cbd5e1; /* Lighter gray */
   cursor: not-allowed;
 }
 
 #page-info {
   margin: 0 8px;
   font-size: 0.9em;
-  color: #555;
+  color: var(--neutral-text-light);
   vertical-align: middle;
 }
 
-.popup-body select {
+.popup-body select, .popup-body input[type="text"], .popup-body input[type="number"], .popup-body input[type="date"] {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--neutral-border);
   border-radius: 5px;
   background-color: white;
   font-size: 1em;
-  color: #333;
+  color: var(--neutral-text-main);
+  box-sizing: border-box;
+}
+
+.popup-body select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-13%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013l128%20127.9c3.6%203.6%207.8%205.4%2013%205.4s9.4-1.8%2013-5.4L287%2095.2c3.6-3.6%205.4-7.8%205.4-13%200-5-1.8-9.4-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748B%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-13%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013l128%20127.9c3.6%203.6%207.8%205.4%2013%205.4s9.4-1.8%2013-5.4L287%2095.2c3.6-3.6%205.4-7.8%205.4-13%200-5-1.8-9.4-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-position: right 10px top 50%;
   background-size: 12px auto;
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.popup-body select:hover {
-  border-color: #0056b3;
-}
-
-.popup-body select:focus {
+.popup-body select:focus, .popup-body input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: var(--primary-main);
+  box-shadow: 0 0 0 2px var(--primary-light);
 }
 
 .popup-body label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
+    color: var(--neutral-text-main);
 }
 
 #sort-popup-container .popup-body div {
@@ -424,33 +439,26 @@ tbody tr.selected td {
 
 .filter-row select, .filter-row input {
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--neutral-border);
   border-radius: 4px;
   font-size: 0.9em;
   box-sizing: border-box;
 }
 
-.filter-column {
-  flex: 3;
-}
-
-.filter-operator {
-  flex: 3;
-}
-
+.filter-column { flex: 3; }
+.filter-operator { flex: 3; }
 .filter-value-container {
   flex: 4;
   display: flex;
   align-items: center;
   gap: 5px;
 }
-
 .filter-value-container input, .filter-value-container select {
   width: 100%;
 }
 
 .remove-filter-btn {
-  background-color: #dc3545;
+  background-color: var(--danger-main);
   color: white;
   border: none;
   border-radius: 50%;
@@ -462,14 +470,14 @@ tbody tr.selected td {
   text-align: center;
   padding: 0;
   flex-shrink: 0;
+  transition: background-color 0.2s;
 }
 
 .remove-filter-btn:hover {
-  background-color: #c82333;
+  background-color: #B91C1C;
 }
 
-/* Tambahan di akhir file style.css */
-
+/* Import Page Styles */
 .import-container {
   max-width: 900px;
   margin: 30px auto;
@@ -480,16 +488,16 @@ tbody tr.selected td {
 }
 
 .import-step-card {
-  background-color: #ffffff;
+  background-color: var(--neutral-card);
   border-radius: 8px;
   padding: 25px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  border: 1px solid var(--neutral-border);
 }
 
 .import-step-card h3 {
   margin-top: 0;
-  color: #007bff;
+  color: var(--primary-main);
   font-size: 1.4em;
   display: flex;
   align-items: center;
@@ -497,14 +505,14 @@ tbody tr.selected td {
 }
 
 .import-step-card p {
-  color: #555;
+  color: var(--neutral-text-light);
   line-height: 1.6;
 }
 
 .file-input-label {
   display: inline-block;
   padding: 12px 25px;
-  background-color: #007bff;
+  background-color: var(--primary-main);
   color: white;
   border-radius: 5px;
   cursor: pointer;
@@ -513,7 +521,7 @@ tbody tr.selected td {
 }
 
 .file-input-label:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-dark);
 }
 
 .file-input-label i {
@@ -522,7 +530,7 @@ tbody tr.selected td {
 
 .file-name {
   margin-left: 15px;
-  color: #6c757d;
+  color: var(--neutral-text-light);
   font-style: italic;
 }
 
@@ -533,59 +541,60 @@ tbody tr.selected td {
   font-weight: 500;
 }
 
-/* Warna status dinamis akan diatur via JS */
 #status-message.success {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background-color: var(--success-light);
+  color: var(--success-main);
+  border: 1px solid var(--success-main);
 }
 
 #status-message.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-  white-space: pre-wrap; /* Agar baris baru di pesan error tampil */
+  background-color: var(--danger-light);
+  color: var(--danger-main);
+  border: 1px solid var(--danger-main);
+  white-space: pre-wrap;
 }
 
 #status-message.info {
-  background-color: #cce5ff;
-  color: #004085;
-  border: 1px solid #b8daff;
+  background-color: var(--info-light);
+  color: var(--info-main);
+  border: 1px solid var(--info-main);
 }
 
 #status-message.warning {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
+  background-color: var(--warning-light);
+  color: var(--warning-main);
+  border: 1px solid var(--warning-main);
 }
-
 
 #preview-container table {
   margin-top: 15px;
 }
 
 #preview-container h3 {
-    margin-top: 25px;
-    margin-bottom: 10px;
-    font-size: 1.2em;
-    color: #333;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  color: var(--neutral-text-main);
 }
 #preview-container h3:first-child {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .primary-action {
-    background-color: #28a745;
-    color: white;
-    font-size: 1.1em !important;
-    padding: 15px 30px !important;
+  background-color: var(--success-main) !important;
+  color: white !important;
+  border-color: var(--success-main) !important;
+  font-size: 1.1em !important;
+  padding: 15px 30px !important;
 }
 
 .primary-action:hover {
-    background-color: #218838;
+  background-color: #15803D !important;
 }
 
 .primary-action:disabled {
-    background-color: #a0a0a0;
-    cursor: not-allowed;
+  background-color: #a0a0a0 !important;
+  cursor: not-allowed !important;
+  border-color: #a0a0a0 !important;
+  color: white !important;
 }

@@ -18,17 +18,21 @@ let allAlumniData = [];
 // --- PALET WARNA BARU YANG LEBIH CERDAS ---
 const colorPalette = {
     // Warna Kontekstual (untuk nilai spesifik)
-    'Sudah Bekerja': 'rgba(40, 167, 69, 0.8)', // Hijau
-    'Belum Bekerja': 'rgba(220, 53, 69, 0.8)', // Merah
-    'Sesuai': 'rgba(0, 123, 255, 0.8)',       // Biru
-    'Tidak Sesuai': 'rgba(255, 193, 7, 0.8)',  // Kuning/Oranye
+    'Sudah Bekerja': 'rgba(22, 163, 74, 0.8)',      // --success-main
+    'Belum Bekerja': 'rgba(220, 38, 38, 0.8)',      // --danger-main
+    'Sesuai': 'rgba(37, 99, 235, 0.8)',             // --primary-main
+    'Tidak Sesuai': 'rgba(217, 119, 6, 0.8)',       // --warning-main
     
     // Warna Umum (untuk kategori dinamis seperti nama program/tahun)
     general: [
-        'rgba(54, 162, 235, 0.8)', 'rgba(255, 99, 132, 0.8)',
-        'rgba(75, 192, 192, 0.8)', 'rgba(255, 206, 86, 0.8)',
-        'rgba(153, 102, 255, 0.8)', 'rgba(255, 159, 64, 0.8)',
-        'rgba(23, 162, 184, 0.8)', 'rgba(108, 117, 125, 0.8)'
+        'rgba(37, 99, 235, 0.8)',   // --primary-main
+        'rgba(234, 88, 12, 0.8)',   // A nice orange accent
+        'rgba(2, 132, 199, 0.8)',   // --info-main (cyan)
+        'rgba(100, 116, 139, 0.8)', // --neutral-text-light
+        'rgba(153, 102, 255, 0.8)', // Original purple
+        'rgba(255, 159, 64, 0.8)',  // Original orange
+        'rgba(75, 192, 192, 0.8)',  // Original teal
+        'rgba(255, 99, 132, 0.8)'   // Original pink
     ]
 };
 
@@ -115,7 +119,7 @@ function generatePesertaPerTahunChart(data) {
             label: 'Jumlah Peserta',
             data: chartData,
             fill: false,
-            borderColor: 'rgba(54, 162, 235, 1)',
+            borderColor: 'rgba(37, 99, 235, 1)', // --primary-main
             tension: 0.1
         }],
         title: 'Tren Jumlah Peserta Pelatihan per Tahun'
@@ -218,16 +222,19 @@ function applyFilters() {
 function renderChart({ type, labels, datasets, title, isStacked = false }) {
     if (labels.length === 0) {
         chartContainer.innerHTML = '<p>Tidak ada data untuk ditampilkan dengan filter yang dipilih.</p>';
+        chartContainer.style.display = 'block';
         return;
     } else if (document.getElementById('myChart') === null) {
         chartContainer.innerHTML = '<canvas id="myChart"></canvas>';
     }
 
-    // Pewarnaan dataset umum (kecuali pie chart yang sudah di-handle)
     if (type !== 'pie') {
         datasets.forEach((ds, index) => {
             if (!ds.backgroundColor) {
                 ds.backgroundColor = colorPalette.general[index % colorPalette.general.length];
+            }
+            if (!ds.borderColor) {
+                ds.borderColor = ds.backgroundColor.replace('0.8', '1'); // Make border solid color
             }
         });
     }
@@ -253,7 +260,6 @@ function renderChart({ type, labels, datasets, title, isStacked = false }) {
                             if (context.parsed.y !== null) {
                                 label += context.parsed.y;
                             }
-                            // Tambahkan persentase untuk pie/doughnut
                             if ((context.chart.config.type === 'pie' || context.chart.config.type === 'doughnut') && context.parsed !== null) {
                                 const total = context.chart.getDatasetMeta(0).total;
                                 const percentage = ((context.parsed / total) * 100).toFixed(2) + '%';
