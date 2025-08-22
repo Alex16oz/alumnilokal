@@ -742,3 +742,10 @@ tbody tr.selected td {
     font-size: 0.8em;
   }
 }
+
+mark {
+  background-color: #fde047; /* yellow-300 */
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: #1e293b; /* slate-800 */
+}

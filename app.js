@@ -110,6 +110,8 @@ function displayPage(page) {
     tbody.innerHTML = '';
     currentPage = page;
 
+    const searchTerm = document.getElementById('search-input').value;
+
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     const paginatedItems = filteredAlumniData.slice(start, end);
@@ -140,7 +142,14 @@ function displayPage(page) {
 
         currentTableHeaders.forEach(header => {
             const cell = document.createElement('td');
-            cell.textContent = alumnus[header] || '';
+            const cellContent = alumnus[header] || '';
+
+            if (searchTerm && cellContent.toString().toLowerCase().includes(searchTerm.toLowerCase())) {
+                const regex = new RegExp(`(${searchTerm})`, 'gi');
+                cell.innerHTML = cellContent.toString().replace(regex, '<mark>$1</mark>');
+            } else {
+                cell.textContent = cellContent;
+            }
             row.appendChild(cell);
         });
 
