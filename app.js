@@ -424,7 +424,20 @@ function updateFilterInputs(column, operatorSelect, valueContainer, filter = {})
 
 function applyFiltersAndSort() {
     let data = [...allAlumniData];
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
 
+    // 1. Terapkan filter pencarian umum
+    if (searchTerm) {
+        data = data.filter(row => {
+            // Cari di semua nilai kolom yang terlihat saat ini
+            return currentTableHeaders.some(header => {
+                const value = row[header];
+                return value ? String(value).toLowerCase().includes(searchTerm) : false;
+            });
+        });
+    }
+
+    // 2. Terapkan filter lanjutan
     if (currentFilters.length > 0) {
         data = data.filter(row => {
             return currentFilters.every(filter => {
@@ -470,6 +483,7 @@ function applyFiltersAndSort() {
         });
     }
 
+    // 3. Terapkan pengurutan
     const { column, direction } = currentSort;
     if (column) {
         data.sort((a, b) => {
@@ -548,6 +562,10 @@ function closeAllPopups() {
     });
     document.body.classList.remove('no-scroll');
 }
+
+// Tambahkan Event Listener untuk Search Bar
+document.getElementById('search-input').addEventListener('input', applyFiltersAndSort);
+
 document.getElementById('select-mode-btn').addEventListener('click', toggleSelectMode);
 document.getElementById('cancel-selection-btn').addEventListener('click', toggleSelectMode);
 
